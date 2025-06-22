@@ -1,4 +1,16 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import NavBar from "./NavBar";
+import Sidebar from "./Sidebar";
 
-const Body = () => {};
+const Body = () => {
+	return (
+		<div>
+			<NavBar />
+			<Sidebar />
+			<Outlet />
+		</div>
+	);
+};
+
+export default Body;
