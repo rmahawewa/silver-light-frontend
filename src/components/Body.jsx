@@ -7,7 +7,6 @@ const Body = () => {
 	return (
 		<div>
 			<NavBar />
-			<Sidebar />
 			<Outlet />
 		</div>
 	);
