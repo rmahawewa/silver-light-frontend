@@ -1,10 +1,42 @@
-import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
+import imagefeedReducer from "./imageSlice";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import {
+	persistStore,
+	persistReducer,
+	FLUSH,
+	REHYDRATE,
+	PAUSE,
+	PERSIST,
+	PURGE,
+	REGISTER,
+} from "redux-persist";
+import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 
-const reduxStore = configureStore({
-	reducer: {
-		user: userReducer,
-	},
+const rootReducer = combineReducers({
+	user: userReducer,
+	imagefeed: imagefeedReducer,
+	// ...other reducers
 });
 
-export default reduxStore;
+const persistConfig = {
+	key: "root", // key for the storage
+	version: 1,
+	storage, // which storage to use (localStorage, sessionStorage, etc.)
+	whitelist: ["user", "imagefeed"], // only 'user' reducer will be persisted
+	// blacklist: ['someOtherReducer'], // exclude some reducers from being persisted
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const reduxStore = configureStore({
+	reducer: persistedReducer,
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({
+			serializableCheck: {
+				ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+			},
+		}),
+});
+
+export const persistor = persistStore(reduxStore);

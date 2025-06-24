@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
-import reduxStore from "./utils/reduxStore";
+import { reduxStore, persistor } from "./utils/reduxStore";
+import { PersistGate } from "redux-persist/integration/react";
 import Body from "./components/Body";
 import Drawer from "./components/Sidebar";
 import Feed from "./components/Feed";
@@ -13,17 +14,19 @@ function App() {
 	return (
 		<>
 			<Provider store={reduxStore}>
-				<BrowserRouter basename="/">
-					<Routes>
-						<Route path="/" element={<Body />}>
-							<Route path="/" element={<Feed />} />
-							<Route path="/login" element={<Login />} />
-							<Route path="/connections" element={<Connections />} />
-							<Route path="/conn-requests" element={<Requests />} />
-							<Route path="/settings" element={<Settings />} />
-						</Route>
-					</Routes>
-				</BrowserRouter>
+				<PersistGate loading={null} persistor={persistor}>
+					<BrowserRouter basename="/">
+						<Routes>
+							<Route path="/" element={<Body />}>
+								<Route path="/" element={<Feed />} />
+								<Route path="/login" element={<Login />} />
+								<Route path="/connections" element={<Connections />} />
+								<Route path="/conn-requests" element={<Requests />} />
+								<Route path="/settings" element={<Settings />} />
+							</Route>
+						</Routes>
+					</BrowserRouter>
+				</PersistGate>
 			</Provider>
 		</>
 	);
