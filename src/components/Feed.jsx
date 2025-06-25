@@ -17,7 +17,7 @@ const Feed = () => {
 				withCredentials: true,
 			});
 			// console.log(res);
-			console.log(res.data.imageData);
+			// console.log(res.data.imageData);
 			dispatch(addImageFeed(res.data.imageData));
 			const postComments = await axios.get(BASE_URL + "/feed/postcomments", {
 				// operate later
@@ -39,7 +39,7 @@ const Feed = () => {
 			{feedData &&
 				feedData.map((img) => (
 					<div key={img._id} className=" flex justify-center py-10">
-						<ImageCard image={img} />
+						<ImageCard imageId={img._id} />
 					</div>
 				))}
 		</>

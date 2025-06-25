@@ -2,25 +2,52 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
+import { savereaction } from "../utils/imageSlice";
 
-const ImageCard = ({ image }) => {
+const ImageCard = ({ imageId }) => {
 	const user = useSelector((store) => store.user);
 	const [reaction, setReaction] = useState("");
+	// const [reactionCount, setReactionCount] = useState(0);
+	const dispatch = useDispatch();
+	const image = useSelector((store) =>
+		store.imagefeed.find((img) => img._id === imageId)
+	);
+
+	const findSimilarReactionCount = (type) => {
+		const result = image.reactions.filter((r) => r.reactionType === type);
+		return result.length;
+		// console.log(image);
+		// console.log(reaction);
+		// setReactionCount(result.length);
+	};
 
 	useEffect(() => {
-		image.reactions.map((r) => {
-			if (r.reactedById === user._id) {
-				setReaction(r.reactionType);
+		if (image && user?._id) {
+			const userReaction = image.reactions.find(
+				(r) => r.reactedById === user._id
+			);
+			if (userReaction) {
+				setReaction(userReaction.reactionType);
 			}
-		});
-	}, []);
-	const saveReaction = async (reaction) => {
+		}
+		// findSimilarReactionCount();
+	}, [image, user]);
+
+	const saveReaction = async (r) => {
 		try {
+			if (reaction === r) {
+				r = "undo";
+				setReaction("");
+			} else {
+				setReaction(r);
+			}
 			const res = await axios.post(
 				BASE_URL + "/reaction/save",
-				{ photoId: image._id, reaction: reaction },
+				{ photoId: image._id, reaction: r },
 				{ withCredentials: true }
 			);
+			dispatch(savereaction(res.data.data));
+			// findSimilarReactionCount();
 		} catch (err) {
 			console.error(err);
 		}
@@ -48,7 +75,12 @@ const ImageCard = ({ image }) => {
 							reaction === "like" ? "btn btn-secondary" : "btn btn-primary"
 						}
 					>
-						Like
+						Like{" "}
+						{reaction === "like" && (
+							<span className="badge badge-ghost">
+								{findSimilarReactionCount(reaction)}
+							</span>
+						)}
 					</button>
 					<button
 						onClick={() => saveReaction("familier")}
@@ -56,7 +88,12 @@ const ImageCard = ({ image }) => {
 							reaction === "familier" ? "btn btn-secondary" : "btn btn-primary"
 						}
 					>
-						Familier
+						Familier{" "}
+						{reaction === "familier" && (
+							<span className="badge badge-ghost">
+								{findSimilarReactionCount(reaction)}
+							</span>
+						)}
 					</button>
 					<button
 						onClick={() => saveReaction("love")}
@@ -64,7 +101,12 @@ const ImageCard = ({ image }) => {
 							reaction === "love" ? "btn btn-secondary" : "btn btn-primary"
 						}
 					>
-						Love
+						Love{" "}
+						{reaction === "love" && (
+							<span className="badge badge-ghost">
+								{findSimilarReactionCount(reaction)}
+							</span>
+						)}
 					</button>
 					<button
 						onClick={() => saveReaction("aTrue")}
@@ -72,7 +114,12 @@ const ImageCard = ({ image }) => {
 							reaction === "aTrue" ? "btn btn-secondary" : "btn btn-primary"
 						}
 					>
-						True
+						True{" "}
+						{reaction === "aTrue" && (
+							<span className="badge badge-ghost">
+								{findSimilarReactionCount(reaction)}
+							</span>
+						)}
 					</button>
 					<button
 						onClick={() => saveReaction("wonderful")}
@@ -80,7 +127,12 @@ const ImageCard = ({ image }) => {
 							reaction === "wonderful" ? "btn btn-secondary" : "btn btn-primary"
 						}
 					>
-						Wonderful
+						Wonderful{" "}
+						{reaction === "wonderful" && (
+							<span className="badge badge-ghost">
+								{findSimilarReactionCount(reaction)}
+							</span>
+						)}
 					</button>
 					<button
 						onClick={() => saveReaction("iFeelJelousy")}
@@ -90,7 +142,12 @@ const ImageCard = ({ image }) => {
 								: "btn btn-primary"
 						}
 					>
-						I feel jelousy
+						I feel jelousy{" "}
+						{reaction === "iFeelJelousy" && (
+							<span className="badge badge-ghost">
+								{findSimilarReactionCount(reaction)}
+							</span>
+						)}
 					</button>
 				</div>
 			</div>

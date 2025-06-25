@@ -7,8 +7,35 @@ const imageSlice = createSlice({
 		addImageFeed: (state, action) => {
 			return action.payload;
 		},
+		savereaction: (state, action) => {
+			const reaction = action.payload;
+			console.log(reaction);
+			const photo = state.find((photo) => photo._id === reaction.photoId);
+			if (!photo) {
+				console.warn(
+					`Image with ${reaction.photoId} not found. Cannot save reaction`
+				);
+				return;
+			}
+			const existingReactionIndex = photo.reactions.findIndex(
+				(r) => r._id === reaction._id
+			);
+			if (existingReactionIndex >= 0) {
+				photo.reactions[existingReactionIndex] = {
+					_id: reaction._id,
+					reactionType: reaction.reactionType,
+					reactedById: reaction.reactedById,
+				};
+			} else {
+				photo.reactions.push({
+					_id: reaction._id,
+					reactionType: reaction.reactionType,
+					reactedById: reaction.reactedById,
+				});
+			}
+		},
 	},
 });
 
-export const { addImageFeed } = imageSlice.actions;
+export const { addImageFeed, savereaction } = imageSlice.actions;
 export default imageSlice.reducer;
