@@ -23,6 +23,7 @@ const ImageCard = ({ imageId }) => {
 
 	useEffect(() => {
 		if (image && user?._id) {
+			console.log(image);
 			const userReaction = image.reactions.find(
 				(r) => r.reactedById === user._id
 			);
@@ -56,7 +57,8 @@ const ImageCard = ({ imageId }) => {
 		<div className="card bg-base-100 w-180 shadow-sm">
 			<figure>
 				<img
-					src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+					// src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+					src={image.url}
 					alt="Shoes"
 				/>
 			</figure>
