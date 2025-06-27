@@ -1,5 +1,6 @@
 import userReducer from "./userSlice";
 import imagefeedReducer from "./imageSlice";
+import connectionfeedReducer from "./connectionRequestSlice";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import {
 	persistStore,
@@ -16,6 +17,7 @@ import storage from "redux-persist/lib/storage"; // defaults to localStorage for
 const rootReducer = combineReducers({
 	user: userReducer,
 	imagefeed: imagefeedReducer,
+	connectionfeed: connectionfeedReducer,
 	// ...other reducers
 });
 
@@ -23,7 +25,7 @@ const persistConfig = {
 	key: "root", // key for the storage
 	version: 1,
 	storage, // which storage to use (localStorage, sessionStorage, etc.)
-	whitelist: ["user", "imagefeed"], // only 'user' reducer will be persisted
+	whitelist: ["user", "imagefeed", "connectionfeed"], // only 'user' reducer will be persisted
 	// blacklist: ['someOtherReducer'], // exclude some reducers from being persisted
 };
 

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { addFeed } from "../utils/feedSlice";
 import { addImageFeed } from "../utils/imageSlice";
+import { addConnectionFeed } from "../utils/connectionRequestSlice";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import ImageCard from "./ImageCard";
@@ -23,11 +24,24 @@ const Feed = () => {
 				// operate later
 				withCredentials: true,
 			});
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const getConnections = async () => {
+		try {
+			const res = await axios.get(BASE_URL + "/request/user-requests", {
+				withCredentials: true,
+			});
+			// console.log(res.data.connections);
+			dispatch(addConnectionFeed(res.data.connections));
 		} catch (err) {}
 	};
 
 	useEffect(() => {
 		getFeed();
+		getConnections();
 	}, []);
 
 	if (!feedData) return;

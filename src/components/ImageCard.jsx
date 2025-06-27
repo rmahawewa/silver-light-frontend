@@ -3,6 +3,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { savereaction } from "../utils/imageSlice";
+import { addNewConnectionRequest } from "../utils/connectionRequestSlice";
 
 const ImageCard = ({ imageId }) => {
 	const user = useSelector((store) => store.user);
@@ -13,17 +14,25 @@ const ImageCard = ({ imageId }) => {
 	const image = useSelector((store) =>
 		store.imagefeed.find((img) => img._id === imageId)
 	);
+	const userConnections = useSelector((store) => store.connectionfeed);
 	const modalId = `reactions_modal_${imageId}`;
 
 	useEffect(() => {
-		console.log(`ImageCard for Image ID: ${imageId}`);
-		console.log("Image object from Redux:", image);
+		// console.log(`ImageCard for Image ID: ${imageId}`);
+		// console.log("Image object from Redux:", image);
 		if (image && !image.reactions) {
 			console.warn(`Image ID ${imageId} is missing 'reactions' array!`);
 		} else if (image && image.reactions && image.reactions.length === 0) {
 			console.log(`Image ID ${imageId} has an empty 'reactions' array.`);
 		}
-	}, [image, imageId]);
+		// console.log(userConnections);
+		console.log(
+			userConnections.length > 0 &&
+				userConnections.find(
+					(r) => r.fromUserId === user._id || r.toUserId === user._id
+				).status
+		);
+	}, [image, imageId, userConnections]);
 
 	const findSimilarReactionCount = (type) => {
 		const result = image.reactions.filter((r) => r.reactionType === type);
@@ -35,7 +44,7 @@ const ImageCard = ({ imageId }) => {
 
 	useEffect(() => {
 		if (image && user?._id) {
-			console.log(image);
+			// console.log(image);
 			const userReaction = image.reactions.find(
 				(r) => r.reactedById === user._id
 			);
@@ -92,13 +101,34 @@ const ImageCard = ({ imageId }) => {
 	};
 
 	useEffect(() => {
-		console.log(reactors);
+		// console.log(reactors);
 		if (reactors.length > 0) document.getElementById(modalId).showModal();
 	}, [reactors]);
 
+	const sendFriendRequest = async (receiverId) => {
+		try {
+			const responce = await axios.post(
+				BASE_URL + "/request/send",
+				{ toUserId: receiverId },
+				{ withCredentials: true }
+			);
+			console.log(responce);
+			dispatch(addNewConnectionRequest(responce.data.data));
+		} catch (err) {}
+	};
+
+	const getConnectionStatus = () => {
+		return (
+			userConnections.length > 0 &&
+			userConnections.find(
+				(r) => r.fromUserId === user._id || r.toUserId === user._id
+			)
+		);
+	};
+
 	return (
 		<>
-			<div className="card bg-base-100 w-180 shadow-sm">
+			<div className="card bg-base-100 w-200 shadow-sm">
 				<figure>
 					<img
 						// src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
@@ -121,12 +151,15 @@ const ImageCard = ({ imageId }) => {
 								reaction === "like" ? "btn btn-secondary" : "btn btn-primary"
 							}
 						>
-							Like{" "}
-							{reaction === "like" && (
-								<span className="badge badge-ghost">
-									{findSimilarReactionCount(reaction)}
-								</span>
-							)}
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								className="size-5"
+							>
+								<path d="M1 8.25a1.25 1.25 0 1 1 2.5 0v7.5a1.25 1.25 0 1 1-2.5 0v-7.5ZM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0 1 14 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 0 1-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 0 1-1.341-.317l-2.734-1.366A3 3 0 0 0 6.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 0 1 2.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388Z" />
+							</svg>
+							Like
 						</button>
 						<button
 							onClick={() => saveReaction("familier")}
@@ -136,12 +169,19 @@ const ImageCard = ({ imageId }) => {
 									: "btn btn-primary"
 							}
 						>
-							Familier{" "}
-							{reaction === "familier" && (
-								<span className="badge badge-ghost">
-									{findSimilarReactionCount(reaction)}
-								</span>
-							)}
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								className="size-5"
+							>
+								<path
+									fillRule="evenodd"
+									d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.536-4.464a.75.75 0 1 0-1.061-1.061 3.5 3.5 0 0 1-4.95 0 .75.75 0 0 0-1.06 1.06 5 5 0 0 0 7.07 0ZM9 8.5c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S7.448 7 8 7s1 .672 1 1.5Zm3 1.5c.552 0 1-.672 1-1.5S12.552 7 12 7s-1 .672-1 1.5.448 1.5 1 1.5Z"
+									clipRule="evenodd"
+								/>
+							</svg>
+							Familier
 						</button>
 						<button
 							onClick={() => saveReaction("love")}
@@ -149,12 +189,15 @@ const ImageCard = ({ imageId }) => {
 								reaction === "love" ? "btn btn-secondary" : "btn btn-primary"
 							}
 						>
-							Love{" "}
-							{reaction === "love" && (
-								<span className="badge badge-ghost">
-									{findSimilarReactionCount(reaction)}
-								</span>
-							)}
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								className="size-5"
+							>
+								<path d="m9.653 16.915-.005-.003-.019-.01a20.759 20.759 0 0 1-1.162-.682 22.045 22.045 0 0 1-2.582-1.9C4.045 12.733 2 10.352 2 7.5a4.5 4.5 0 0 1 8-2.828A4.5 4.5 0 0 1 18 7.5c0 2.852-2.044 5.233-3.885 6.82a22.049 22.049 0 0 1-3.744 2.582l-.019.01-.005.003h-.002a.739.739 0 0 1-.69.001l-.002-.001Z" />
+							</svg>
+							Love
 						</button>
 						<button
 							onClick={() => saveReaction("aTrue")}
@@ -162,12 +205,19 @@ const ImageCard = ({ imageId }) => {
 								reaction === "aTrue" ? "btn btn-secondary" : "btn btn-primary"
 							}
 						>
-							True{" "}
-							{reaction === "aTrue" && (
-								<span className="badge badge-ghost">
-									{findSimilarReactionCount(reaction)}
-								</span>
-							)}
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								className="size-5"
+							>
+								<path
+									fillRule="evenodd"
+									d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
+									clipRule="evenodd"
+								/>
+							</svg>
+							True
 						</button>
 						<button
 							onClick={() => saveReaction("wonderful")}
@@ -177,12 +227,15 @@ const ImageCard = ({ imageId }) => {
 									: "btn btn-primary"
 							}
 						>
-							Wonderful{" "}
-							{reaction === "wonderful" && (
-								<span className="badge badge-ghost">
-									{findSimilarReactionCount(reaction)}
-								</span>
-							)}
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								className="size-5"
+							>
+								<path d="M15.98 1.804a1 1 0 0 0-1.96 0l-.24 1.192a1 1 0 0 1-.784.785l-1.192.238a1 1 0 0 0 0 1.962l1.192.238a1 1 0 0 1 .785.785l.238 1.192a1 1 0 0 0 1.962 0l.238-1.192a1 1 0 0 1 .785-.785l1.192-.238a1 1 0 0 0 0-1.962l-1.192-.238a1 1 0 0 1-.785-.785l-.238-1.192ZM6.949 5.684a1 1 0 0 0-1.898 0l-.683 2.051a1 1 0 0 1-.633.633l-2.051.683a1 1 0 0 0 0 1.898l2.051.684a1 1 0 0 1 .633.632l.683 2.051a1 1 0 0 0 1.898 0l.683-2.051a1 1 0 0 1 .633-.633l2.051-.683a1 1 0 0 0 0-1.898l-2.051-.683a1 1 0 0 1-.633-.633L6.95 5.684ZM13.949 13.684a1 1 0 0 0-1.898 0l-.184.551a1 1 0 0 1-.632.633l-.551.183a1 1 0 0 0 0 1.898l.551.183a1 1 0 0 1 .633.633l.183.551a1 1 0 0 0 1.898 0l.184-.551a1 1 0 0 1 .632-.633l.551-.183a1 1 0 0 0 0-1.898l-.551-.184a1 1 0 0 1-.633-.632l-.183-.551Z" />
+							</svg>
+							Wonderful
 						</button>
 						<button
 							onClick={() => saveReaction("iFeelJelousy")}
@@ -192,12 +245,19 @@ const ImageCard = ({ imageId }) => {
 									: "btn btn-primary"
 							}
 						>
-							I feel jelousy{" "}
-							{reaction === "iFeelJelousy" && (
-								<span className="badge badge-ghost">
-									{findSimilarReactionCount(reaction)}
-								</span>
-							)}
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								className="size-5"
+							>
+								<path
+									fillRule="evenodd"
+									d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z"
+									clipRule="evenodd"
+								/>
+							</svg>
+							I feel jelousy
 						</button>
 					</div>
 					{!(reaction === "" || reaction === "undo") && (
@@ -205,7 +265,7 @@ const ImageCard = ({ imageId }) => {
 							onClick={() => getSimillarReactionsForTheImage(reaction)}
 							className="cursor-pointer"
 						>
-							View simillar reactions
+							View {findSimilarReactionCount(reaction)} simillar reactions
 						</p>
 					)}
 				</div>
@@ -250,22 +310,35 @@ const ImageCard = ({ imageId }) => {
 														/>
 													</svg>
 												</button>
-												<button className="btn btn-square btn-ghost">
-													<svg
-														xmlns="http://www.w3.org/2000/svg"
-														fill="none"
-														viewBox="0 0 24 24"
-														strokeWidth={1.5}
-														stroke="currentColor"
-														className="size-6"
+												{!getConnectionStatus() && r._id !== user._id ? (
+													<button
+														className="btn btn-square btn-ghost"
+														onClick={() => sendFriendRequest(r._id)}
 													>
-														<path
-															strokeLinecap="round"
-															strokeLinejoin="round"
-															d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
-														/>
-													</svg>
-												</button>
+														<svg
+															xmlns="http://www.w3.org/2000/svg"
+															fill="none"
+															viewBox="0 0 24 24"
+															strokeWidth={1.5}
+															stroke="currentColor"
+															className="size-6"
+														>
+															<path
+																strokeLinecap="round"
+																strokeLinejoin="round"
+																d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+															/>
+														</svg>
+													</button>
+												) : getConnectionStatus().status === "sent" &&
+												  getConnectionStatus().fromUserId === user._id ? (
+													<span>Pending</span>
+												) : getConnectionStatus().status === "sent" &&
+												  getConnectionStatus().fromUserId === r._id ? (
+													<button>Accept</button>
+												) : (
+													<span>&nbsp;</span>
+												)}
 											</>
 										)}
 									</li>
