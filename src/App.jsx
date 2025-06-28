@@ -9,6 +9,7 @@ import Login from "./components/Login";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
 import Settings from "./components/Settings";
+import NewImage from "./components/NewImage";
 
 function App() {
 	return (
@@ -23,6 +24,7 @@ function App() {
 								<Route path="/connections" element={<Connections />} />
 								<Route path="/conn-requests" element={<Requests />} />
 								<Route path="/settings" element={<Settings />} />
+								<Route path="/new-image" element={<NewImage />} />
 							</Route>
 						</Routes>
 					</BrowserRouter>

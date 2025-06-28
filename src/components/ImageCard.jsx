@@ -330,14 +330,25 @@ const ImageCard = ({ imageId }) => {
 															/>
 														</svg>
 													</button>
-												) : getConnectionStatus().status === "sent" &&
-												  getConnectionStatus().fromUserId === user._id ? (
-													<span>Pending</span>
-												) : getConnectionStatus().status === "sent" &&
-												  getConnectionStatus().fromUserId === r._id ? (
-													<button>Accept</button>
 												) : (
-													<span>&nbsp;</span>
+													r._id !== user._id && (
+														<span className="py-1">
+															<svg
+																xmlns="http://www.w3.org/2000/svg"
+																fill="none"
+																viewBox="0 0 24 24"
+																strokeWidth={1.5}
+																stroke="currentColor"
+																className="size-6"
+															>
+																<path
+																	strokeLinecap="round"
+																	strokeLinejoin="round"
+																	d="M5 12h14"
+																/>
+															</svg>
+														</span>
+													)
 												)}
 											</>
 										)}

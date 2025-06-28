@@ -30,15 +30,53 @@ const NavBar = () => {
 				</div>
 				{user && (
 					<div className="hidden flex-none lg:block">
-						<ul className="menu menu-horizontal">
-							{/* Navbar menu content here */}
+						<button
+							className="btn btn-ghost btn-circle tooltip tooltip-left tooltip-primary"
+							data-tip="Add new item"
+						>
+							<div className="indicator">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									strokeWidth={1.5}
+									stroke="currentColor"
+									className="size-6"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M12 4.5v15m7.5-7.5h-15"
+									/>
+								</svg>
+							</div>
+						</button>
+						<button
+							className="btn btn-ghost btn-circle tooltip tooltip-left tooltip-primary"
+							data-tip="Categories"
+						>
+							<div className="indicator">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									strokeWidth={1.5}
+									stroke="currentColor"
+									className="size-6"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+									/>
+								</svg>
+							</div>
+						</button>
 
-							<li>
-								<a>Categories</a>
-							</li>
-						</ul>
-
-						<button className="btn btn-ghost btn-circle">
+						<button
+							className="btn btn-ghost btn-circle tooltip tooltip-left tooltip-primary"
+							data-tip="Notifications"
+						>
 							<div className="indicator">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
