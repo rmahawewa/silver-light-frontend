@@ -17,6 +17,9 @@ const imageSlice = createSlice({
 				);
 				return;
 			}
+			if (!photo.reactions) {
+				photo.reactions = [];
+			}
 			const existingReactionIndex = photo.reactions.findIndex(
 				(r) => r._id === reaction._id
 			);
@@ -34,8 +37,12 @@ const imageSlice = createSlice({
 				});
 			}
 		},
+		addoneimage: (state, action) => {
+			state = [...state, action.payload];
+			return state;
+		},
 	},
 });
 
-export const { addImageFeed, savereaction } = imageSlice.actions;
+export const { addImageFeed, savereaction, addoneimage } = imageSlice.actions;
 export default imageSlice.reducer;

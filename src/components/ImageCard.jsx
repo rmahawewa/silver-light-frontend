@@ -45,7 +45,7 @@ const ImageCard = ({ imageId }) => {
 	useEffect(() => {
 		if (image && user?._id) {
 			// console.log(image);
-			const userReaction = image.reactions.find(
+			const userReaction = image?.reactions?.find(
 				(r) => r.reactedById === user._id
 			);
 			if (userReaction) {

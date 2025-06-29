@@ -30,27 +30,37 @@ const NavBar = () => {
 				</div>
 				{user && (
 					<div className="hidden flex-none lg:block">
-						<button
-							className="btn btn-ghost btn-circle tooltip tooltip-left tooltip-primary"
-							data-tip="Add new item"
-						>
-							<div className="indicator">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									strokeWidth={1.5}
-									stroke="currentColor"
-									className="size-6"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M12 4.5v15m7.5-7.5h-15"
-									/>
-								</svg>
-							</div>
-						</button>
+						<div className="dropdown dropdown-hover">
+							<button className="btn btn-ghost btn-circle">
+								<div className="indicator">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										strokeWidth={1.5}
+										stroke="currentColor"
+										className="size-6"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M12 4.5v15m7.5-7.5h-15"
+										/>
+									</svg>
+								</div>
+							</button>
+							<ul
+								tabIndex={0}
+								className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+							>
+								<li>
+									<Link to="/new-image">New image</Link>
+								</li>
+								<li>
+									<Link to="/new-post">New post</Link>
+								</li>
+							</ul>
+						</div>
 						<button
 							className="btn btn-ghost btn-circle tooltip tooltip-left tooltip-primary"
 							data-tip="Categories"
