@@ -1,7 +1,133 @@
-import React from "react";
+import React, { use, useEffect, useState } from "react";
+import ImageButton from "./ImageButton";
+import { BASE_URL } from "../utils/constants";
+import axios from "axios";
 
 const NewPost = () => {
-	return <div></div>;
+	const [title, setTitle] = useState("");
+	const [category, setCategory] = useState("");
+	const [categories, setCategories] = useState([]);
+	const [description, setDescription] = useState("");
+	const [selectImages, setSelectImages] = useState(false);
+	const [images, setImages] = useState([]);
+	const [imageIds, setImageIds] = useState([]);
+	// const dispatch = useDispatch();
+	const categoryChanged = (value) => {
+		value.length < 21 && setCategory(value);
+	};
+	const addCategory = () => {
+		if (category !== "") {
+			categories.length < 6 &&
+				!categories.find((c) => c == category) &&
+				setCategories((prevCategories) => [...prevCategories, category]);
+		}
+		setCategory("");
+	};
+	const removeCategory = (cat) => {
+		const newArr = categories && categories.filter((c) => c !== cat);
+		setCategories(newArr);
+	};
+
+	const getUserUploadedImages = async () => {
+		try {
+			const res = await axios.get(BASE_URL + "/feed/get-uploaded-images", {
+				withCredentials: true,
+			});
+			console.log(res);
+			res && setImages(res.data.data);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	useEffect(() => {
+		try {
+			getUserUploadedImages();
+		} catch (err) {
+			console.log(err);
+		}
+	}, []);
+
+	const onImageSelect = () => {
+		return;
+	};
+
+	return (
+		<>
+			{!selectImages ? (
+				<div className="flex justify-center py-12">
+					<fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+						<legend className="fieldset-legend">Add new post</legend>
+						<button onClick={setSelectImages(true)}>
+							Select from uploaded images
+						</button>
+						<label className="label">Title</label>
+						<input
+							type="text"
+							className="input"
+							placeholder="Beautifully branched tree"
+							value={title}
+							onChange={(e) => setTitle(e.target.value)}
+						/>
+
+						<label className="label">Category</label>
+						<div className="join ">
+							{/* <div> */}
+							{/* <label className="input validator join-item"> */}
+							<input
+								type="text"
+								className="input rounded-box"
+								placeholder="nature"
+								value={category}
+								onChange={(e) => categoryChanged(e.target.value)}
+							/>
+							{/* </label> */}
+							<div className="validator-hint hidden">Enter valid category</div>
+							{/* </div> */}
+							<button className="btn btn-success" onClick={addCategory}>
+								Add
+							</button>
+						</div>
+						{categories && (
+							<div>
+								{[...categories].map((c, index) => (
+									<button
+										key={index}
+										className="btn"
+										onClick={() => removeCategory(c)}
+									>
+										{c}
+									</button>
+								))}
+							</div>
+						)}
+
+						<label className="label">Description</label>
+						<textarea
+							className="textarea"
+							placeholder="The artistic nature of branching is amaizing"
+							value={description}
+							onChange={(e) => setDescription(e.target.value)}
+						></textarea>
+						<button className="btn btn-success">Add</button>
+					</fieldset>
+				</div>
+			) : (
+				<div>
+					{images &&
+						images.map((img) => (
+							<div key={img._id}>
+								<p>{img._id}</p>
+								<ImageButton
+									image={img}
+									handleImageButtonClick={onImageSelect}
+								/>
+							</div>
+						))}
+				</div>
+			)}
+		</>
+	);
 };
 
 export default NewPost;

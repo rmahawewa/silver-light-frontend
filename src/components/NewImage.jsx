@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
-import { UNSAFE_withComponentProps } from "react-router-dom";
 import axios from "axios";
 import ImageCard from "./ImageCard";
 import { addoneimage } from "../utils/imageSlice";

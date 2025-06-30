@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { removeUser } from "../utils/userSlice";
 import axios from "axios";
+import NewImage from "./NewImage";
 
 const NavBar = () => {
 	const user = useSelector((store) => store.user);
@@ -54,7 +55,14 @@ const NavBar = () => {
 								className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
 							>
 								<li>
-									<Link to="/new-image">New image</Link>
+									<span
+										onClick={() =>
+											document.getElementById("my_modal_1").showModal()
+										}
+									>
+										New image
+									</span>
+									{/* <Link to="/new-image">New image</Link> */}
 								</li>
 								<li>
 									<Link to="/new-post">New post</Link>
@@ -144,6 +152,19 @@ const NavBar = () => {
 					</div>
 				)}
 			</div>
+			{/* Open the modal using document.getElementById('ID').showModal() method */}
+			{/* <button className="btn">open modal</button> */}
+			<dialog id="my_modal_1" className="modal">
+				<div className="modal-box w-11/12 max-w-5xl">
+					<NewImage />
+					<div className="modal-action">
+						<form method="dialog">
+							{/* if there is a button in form, it will close the modal */}
+							<button className="btn">Close</button>
+						</form>
+					</div>
+				</div>
+			</dialog>
 		</>
 	);
 };
