@@ -1,16 +1,32 @@
 import React, { use, useEffect, useState } from "react";
 
 const ImageButton = ({ image, handleImageButtonClick }) => {
-	// const [isClicked, setIsClicked] = useState(false);
-	// const imageButtonClick = () => {
-	// 	setIsClicked((value) => !value);
-	// 	// console.log("test");
-	// 	// console.log(isClicked);
-	// };
+	const [isClicked, setIsClicked] = useState(false);
+	const imageButtonClick = () => {
+		setIsClicked((value) => (value = !value));
+	};
+	useEffect(() => {
+		// console.log(isClicked);
+		handleImageButtonClick(image._id, isClicked);
+	}, [isClicked]);
 	return (
 		<div>
-			<button>
-				<img src={image.url} alt={image.photoTitle} />
+			<button
+				style={{
+					border: isClicked ? "5px solid gray" : "5px solid white",
+					width: "25em",
+					height: "20em",
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+				}}
+				onClick={() => imageButtonClick()}
+			>
+				<img
+					style={{ width: "25em", height: "auto" }}
+					src={image.url}
+					alt={image.photoTitle}
+				/>
 			</button>
 		</div>
 	);

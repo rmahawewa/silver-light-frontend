@@ -2,6 +2,8 @@ import React, { use, useEffect, useState } from "react";
 import ImageButton from "./ImageButton";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
+import "../styles/style.css";
+import "./PostCard";
 
 const NewPost = () => {
 	const [title, setTitle] = useState("");
@@ -33,7 +35,7 @@ const NewPost = () => {
 			const res = await axios.get(BASE_URL + "/feed/get-uploaded-images", {
 				withCredentials: true,
 			});
-			console.log(res);
+			// console.log(res);
 			res && setImages(res.data.data);
 		} catch (err) {
 			console.log(err);
@@ -48,8 +50,42 @@ const NewPost = () => {
 		}
 	}, []);
 
-	const onImageSelect = () => {
-		return;
+	const onImageSelect = (imageId, isSelected) => {
+		// console.log(isSelected);
+		if (isSelected) {
+			// console.log(isSelected);
+			setImageIds((imgIds) => [...imgIds, imageId]);
+			// console.log(imageIds);
+		} else {
+			// console.log(isSelected);
+			let newImageIds = imageIds.filter((i) => i !== imageId);
+			setImageIds(newImageIds);
+		}
+		// console.log(imageIds);
+	};
+
+	useEffect(() => {
+		console.log(imageIds);
+	}, [imageIds]);
+
+	const handleSubmit = async () => {
+		try {
+			const res = await axios.post(
+				BASE_URL + "/post/save",
+				{
+					images: imageIds,
+					title: title,
+					description: description,
+					category: categories,
+				},
+				{ withCredentials: true }
+			);
+			console.log(res);
+			if (res.data.data) {
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	return (
@@ -58,7 +94,10 @@ const NewPost = () => {
 				<div className="flex justify-center py-12">
 					<fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
 						<legend className="fieldset-legend">Add new post</legend>
-						<button onClick={setSelectImages(true)}>
+						<button
+							className="btn btn-success m-1"
+							onClick={() => setSelectImages(true)}
+						>
 							Select from uploaded images
 						</button>
 						<label className="label">Title</label>
@@ -109,22 +148,31 @@ const NewPost = () => {
 							value={description}
 							onChange={(e) => setDescription(e.target.value)}
 						></textarea>
-						<button className="btn btn-success">Add</button>
+						<button className="btn btn-success" onClick={() => handleSubmit()}>
+							Add
+						</button>
 					</fieldset>
 				</div>
 			) : (
-				<div>
-					{images &&
-						images.map((img) => (
-							<div key={img._id}>
-								<p>{img._id}</p>
-								<ImageButton
-									image={img}
-									handleImageButtonClick={onImageSelect}
-								/>
-							</div>
-						))}
-				</div>
+				<>
+					<button
+						className="btn btn-success m-1"
+						onClick={() => setSelectImages(false)}
+					>
+						Select images
+					</button>
+					<div className="image-container">
+						{images &&
+							images.map((img) => (
+								<div key={img._id}>
+									<ImageButton
+										image={img}
+										handleImageButtonClick={onImageSelect}
+									/>
+								</div>
+							))}
+					</div>
+				</>
 			)}
 		</>
 	);
