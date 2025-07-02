@@ -5,25 +5,29 @@ import { useDispatch, useSelector } from "react-redux";
 import { savereaction } from "../utils/imageSlice";
 import { addNewConnectionRequest } from "../utils/connectionRequestSlice";
 
-const PostCard = ({ imageId }) => {
+const PostCard = ({ postId }) => {
 	const user = useSelector((store) => store.user);
 	const [reaction, setReaction] = useState("");
 	const [reactors, setReactors] = useState([]);
 	// const [reactionCount, setReactionCount] = useState(0);
 	const dispatch = useDispatch();
-	const image = useSelector((store) =>
-		store.imagefeed.find((img) => img._id === imageId)
+	const post = useSelector((store) =>
+		store.postfeed.find((pt) => pt._id === postId)
 	);
 	const userConnections = useSelector((store) => store.connectionfeed);
-	const modalId = `reactions_modal_${imageId}`;
+	const modalId = `reactions_modal_${postId}`;
 
 	useEffect(() => {
 		// console.log(`ImageCard for Image ID: ${imageId}`);
 		// console.log("Image object from Redux:", image);
-		if (image && !image.reactions) {
-			console.warn(`Image ID ${imageId} is missing 'reactions' array!`);
-		} else if (image && image.reactions && image.reactions.length === 0) {
-			console.log(`Image ID ${imageId} has an empty 'reactions' array.`);
+		if (post && !post.post_reactions) {
+			console.warn(`Post ID ${postId} is missing 'post_reactions' array!`);
+		} else if (
+			post &&
+			post.post_reactions &&
+			post.post_reactions.length === 0
+		) {
+			console.log(`Post ID ${postId} has an empty 'post_reactions' array.`);
 		}
 		// console.log(userConnections);
 		console.log(
@@ -32,10 +36,10 @@ const PostCard = ({ imageId }) => {
 					(r) => r.fromUserId === user._id || r.toUserId === user._id
 				).status
 		);
-	}, [image, imageId, userConnections]);
+	}, [post, postId, userConnections]);
 
 	const findSimilarReactionCount = (type) => {
-		const result = image.reactions.filter((r) => r.reactionType === type);
+		const result = post.post_reactions.filter((r) => r.reactionType === type);
 		return result.length;
 		// console.log(image);
 		// console.log(reaction);
@@ -43,9 +47,9 @@ const PostCard = ({ imageId }) => {
 	};
 
 	useEffect(() => {
-		if (image && user?._id) {
+		if (post && user?._id) {
 			// console.log(image);
-			const userReaction = image?.reactions?.find(
+			const userReaction = post?.post_reactions?.find(
 				(r) => r.reactedById === user._id
 			);
 			if (userReaction) {
@@ -53,7 +57,7 @@ const PostCard = ({ imageId }) => {
 			}
 		}
 		// findSimilarReactionCount();
-	}, [image, user]);
+	}, [post, user]);
 
 	const saveReaction = async (r) => {
 		try {
@@ -78,16 +82,16 @@ const PostCard = ({ imageId }) => {
 	const getSimillarReactionsForTheImage = async (r) => {
 		const reactionArray = [];
 
-		if (!image || !image.reactions) {
+		if (!post || !post.post_reactions) {
 			console.warn(
-				`Cannot get similar reactions for image ID ${imageId}: image or reactions data is missing.`
+				`Cannot get similar reactions for image ID ${postId}: image or reactions data is missing.`
 			);
 			setReactors([]); // Ensure reactors is empty if data is not available
 			document.getElementById("my_modal_2").showModal(); // Show modal with "No users found"
 			return; // Exit early
 		}
 
-		image.reactions.forEach((reaction) => {
+		post.post_reactions.forEach((reaction) => {
 			if (reaction.reactionType === r) {
 				reactionArray.push(reaction.reactedById);
 			}
@@ -130,17 +134,17 @@ const PostCard = ({ imageId }) => {
 		<>
 			<div className="card bg-base-100 w-200 shadow-sm">
 				<figure>
-					<img
+					{/* <img
 						// src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
 						src={image.url}
 						alt="Shoes"
-					/>
+					/> */}
 				</figure>
 				<div className="card-body">
-					<h2 className="card-title">{image.photoTitle}</h2>
-					<p>{image.photoDescription}</p>
+					<h2 className="card-title">{post.title}</h2>
+					<p>{post.description}</p>
 					<p>
-						{image.category.map((c, i) => (
+						{post.category.map((c, i) => (
 							<span key={i}>#{c} </span>
 						))}
 					</p>

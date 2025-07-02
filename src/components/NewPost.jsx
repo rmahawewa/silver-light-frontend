@@ -4,6 +4,9 @@ import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import "../styles/style.css";
 import "./PostCard";
+import PostCard from "./PostCard";
+import { addOnePost } from "../utils/postSlice";
+import { useDispatch } from "react-redux";
 
 const NewPost = () => {
 	const [title, setTitle] = useState("");
@@ -13,7 +16,8 @@ const NewPost = () => {
 	const [selectImages, setSelectImages] = useState(false);
 	const [images, setImages] = useState([]);
 	const [imageIds, setImageIds] = useState([]);
-	// const dispatch = useDispatch();
+	const [postId, setPostId] = useState("");
+	const dispatch = useDispatch();
 	const categoryChanged = (value) => {
 		value.length < 21 && setCategory(value);
 	};
@@ -80,15 +84,21 @@ const NewPost = () => {
 				},
 				{ withCredentials: true }
 			);
-			console.log(res);
+
 			if (res.data.data) {
+				const post = res.data.data;
+				post.post_reactions = [];
+				dispatch(addOnePost(post));
+			}
+			if (res.data.data._id) {
+				setPostId(res.data.data._id);
 			}
 		} catch (err) {
 			console.log(err);
 		}
 	};
 
-	return (
+	return !postId ? (
 		<>
 			{!selectImages ? (
 				<div className="flex justify-center py-12">
@@ -175,6 +185,10 @@ const NewPost = () => {
 				</>
 			)}
 		</>
+	) : (
+		<div className=" flex justify-center py-10">
+			<PostCard postId={postId} />
+		</div>
 	);
 };
 

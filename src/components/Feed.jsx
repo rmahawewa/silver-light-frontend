@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { addFeed } from "../utils/feedSlice";
 import { addImageFeed } from "../utils/imageSlice";
+import { addPostFeed } from "../utils/postSlice";
 import { addConnectionFeed } from "../utils/connectionRequestSlice";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +21,7 @@ const Feed = () => {
 			// console.log(res);
 			// console.log(res.data.imageData);
 			dispatch(addImageFeed(res.data.imageData));
+			dispatch(addPostFeed(res.data.postData));
 			const postComments = await axios.get(BASE_URL + "/feed/postcomments", {
 				// operate later
 				withCredentials: true,
