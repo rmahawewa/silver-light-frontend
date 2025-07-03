@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { savereaction } from "../utils/imageSlice";
+import { savepostreaction } from "../utils/postSlice";
 import { addNewConnectionRequest } from "../utils/connectionRequestSlice";
 
 const PostCard = ({ postId }) => {
 	const user = useSelector((store) => store.user);
 	const [reaction, setReaction] = useState("");
 	const [reactors, setReactors] = useState([]);
-	// const [reactionCount, setReactionCount] = useState(0);
+	const [comment, setComment] = useState("");
+	const [postComments, setPostComments] = useState([]);
 	const dispatch = useDispatch();
 	const post = useSelector((store) =>
 		store.postfeed.find((pt) => pt._id === postId)
@@ -36,6 +37,8 @@ const PostCard = ({ postId }) => {
 					(r) => r.fromUserId === user._id || r.toUserId === user._id
 				).status
 		);
+		console.log(post);
+		getPostComments();
 	}, [post, postId, userConnections]);
 
 	const findSimilarReactionCount = (type) => {
@@ -68,11 +71,12 @@ const PostCard = ({ postId }) => {
 				setReaction(r);
 			}
 			const res = await axios.post(
-				BASE_URL + "/reaction/save",
-				{ photoId: image._id, reaction: r },
+				BASE_URL + "/postreaction/save",
+				{ postId: postId, reaction: r },
 				{ withCredentials: true }
 			);
-			dispatch(savereaction(res.data.data));
+			console.log(res);
+			dispatch(savepostreaction(res.data.data));
 			// findSimilarReactionCount();
 		} catch (err) {
 			console.error(err);
@@ -130,16 +134,83 @@ const PostCard = ({ postId }) => {
 		);
 	};
 
+	const getPostComments = async () => {
+		try {
+			const res = await axios.get(BASE_URL + "/postcomment/" + postId, {
+				withCredentials: true,
+			});
+			setPostComments(res.data.data);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const saveComment = async (parentCommentId, event) => {
+		try {
+			if (event.key === "Enter") {
+				const res = await axios.post(
+					BASE_URL + "/postcomment/save",
+					{ postId, parentCommentId, comment, commentByUser: user._id },
+					{ withCredentials: true }
+				);
+				console.log(res);
+				if (res) {
+					getPostComments();
+					console.log(postComments);
+					setComment("");
+				}
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
 	return (
 		<>
 			<div className="card bg-base-100 w-200 shadow-sm">
-				<figure>
-					{/* <img
-						// src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-						src={image.url}
-						alt="Shoes"
-					/> */}
-				</figure>
+				{post && post.photos && (
+					<figure>
+						<div className="carousel w-full">
+							{post.photos.map((p, index) => (
+								<div
+									key={p._id}
+									id={"slide" + (index + 1)}
+									className="carousel-item relative w-full"
+								>
+									<img
+										key={p._id}
+										src={p.url}
+										className="w-full"
+										alt={p.photoTitle}
+									/>
+									<div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+										<a
+											href={
+												index === 0
+													? "#slide" + post.photos.length
+													: "#slide" + index
+											}
+											className="btn btn-circle"
+										>
+											❮
+										</a>
+										<a
+											href={
+												index === post.photos.length - 1
+													? "#slide1"
+													: "#slide" + Number(index + 2)
+											}
+											className="btn btn-circle"
+										>
+											❯
+										</a>
+									</div>
+								</div>
+							))}
+						</div>
+					</figure>
+				)}
+
 				<div className="card-body">
 					<h2 className="card-title">{post.title}</h2>
 					<p>{post.description}</p>
@@ -272,6 +343,17 @@ const PostCard = ({ postId }) => {
 							View {findSimilarReactionCount(reaction)} simillar reactions
 						</p>
 					)}
+					<div className="postComments my-5">
+						<input
+							type="text"
+							placeholder="Add a new coment"
+							className="input"
+							value={comment}
+							onChange={(e) => setComment(e.target.value)}
+							onKeyUp={(e) => saveComment(0, e)}
+						/>
+						{postComments && <div className="my-5"></div>}
+					</div>
 				</div>
 			</div>
 			<dialog id={modalId} className="modal">

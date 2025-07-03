@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { removeUser } from "../utils/userSlice";
 import axios from "axios";
 import NewImage from "./NewImage";
+import NewPost from "./NewPost";
 
 const NavBar = () => {
 	const user = useSelector((store) => store.user);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const [itemSwitch, setItemSwitch] = useState("");
 
 	const handleLogout = async () => {
 		try {
@@ -56,16 +58,25 @@ const NavBar = () => {
 							>
 								<li>
 									<span
-										onClick={() =>
-											document.getElementById("my_modal_1").showModal()
-										}
+										onClick={() => {
+											setItemSwitch("image");
+											document.getElementById("my_modal_1").showModal();
+										}}
 									>
 										New image
 									</span>
 									{/* <Link to="/new-image">New image</Link> */}
 								</li>
 								<li>
-									<Link to="/new-post">New post</Link>
+									<span
+										onClick={() => {
+											setItemSwitch("post");
+											document.getElementById("my_modal_1").showModal();
+										}}
+									>
+										New post
+									</span>
+									{/* <Link to="/new-post">New post</Link> */}
 								</li>
 							</ul>
 						</div>
@@ -156,7 +167,8 @@ const NavBar = () => {
 			{/* <button className="btn">open modal</button> */}
 			<dialog id="my_modal_1" className="modal">
 				<div className="modal-box w-11/12 max-w-5xl">
-					<NewImage />
+					{itemSwitch === "image" && <NewImage />}
+					{itemSwitch === "post" && <NewPost />}
 					<div className="modal-action">
 						<form method="dialog">
 							{/* if there is a button in form, it will close the modal */}
