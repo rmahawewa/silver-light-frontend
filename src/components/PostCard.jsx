@@ -4,6 +4,7 @@ import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { savepostreaction } from "../utils/postSlice";
 import { addNewConnectionRequest } from "../utils/connectionRequestSlice";
+import PostComments from "./PostComments";
 
 const PostCard = ({ postId }) => {
 	const user = useSelector((store) => store.user);
@@ -183,28 +184,30 @@ const PostCard = ({ postId }) => {
 										className="w-full"
 										alt={p.photoTitle}
 									/>
-									<div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-										<a
-											href={
-												index === 0
-													? "#slide" + post.photos.length
-													: "#slide" + index
-											}
-											className="btn btn-circle"
-										>
-											❮
-										</a>
-										<a
-											href={
-												index === post.photos.length - 1
-													? "#slide1"
-													: "#slide" + Number(index + 2)
-											}
-											className="btn btn-circle"
-										>
-											❯
-										</a>
-									</div>
+									{post.photos.length > 1 && (
+										<div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+											<a
+												href={
+													index === 0
+														? "#slide" + post.photos.length
+														: "#slide" + index
+												}
+												className="btn btn-circle"
+											>
+												❮
+											</a>
+											<a
+												href={
+													index === post.photos.length - 1
+														? "#slide1"
+														: "#slide" + Number(index + 2)
+												}
+												className="btn btn-circle"
+											>
+												❯
+											</a>
+										</div>
+									)}
 								</div>
 							))}
 						</div>
@@ -352,7 +355,11 @@ const PostCard = ({ postId }) => {
 							onChange={(e) => setComment(e.target.value)}
 							onKeyUp={(e) => saveComment(0, e)}
 						/>
-						{postComments && <div className="my-5"></div>}
+						{postComments && (
+							<div className="my-5">
+								<PostComments comments={postComments} />
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

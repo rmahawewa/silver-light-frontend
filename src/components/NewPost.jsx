@@ -8,7 +8,7 @@ import PostCard from "./PostCard";
 import { addOnePost } from "../utils/postSlice";
 import { useDispatch } from "react-redux";
 
-const NewPost = () => {
+const NewPost = ({ post_id, handlePostidChange }) => {
 	const [title, setTitle] = useState("");
 	const [category, setCategory] = useState("");
 	const [categories, setCategories] = useState([]);
@@ -16,11 +16,17 @@ const NewPost = () => {
 	const [selectImages, setSelectImages] = useState(false);
 	const [images, setImages] = useState([]);
 	const [imageIds, setImageIds] = useState([]);
-	const [postId, setPostId] = useState("");
+	const [postId, setPostId] = useState(post_id);
 	const dispatch = useDispatch();
 	const categoryChanged = (value) => {
 		value.length < 21 && setCategory(value);
 	};
+
+	useEffect(() => {
+		setPostId(post_id);
+		console.log(postId);
+	}, [post_id]);
+
 	const addCategory = () => {
 		if (category !== "") {
 			categories.length < 6 &&
@@ -91,7 +97,8 @@ const NewPost = () => {
 				dispatch(addOnePost(post));
 			}
 			if (res.data.data._id) {
-				setPostId(res.data.data._id);
+				// setPostId(res.data.data._id);
+				handlePostidChange(res.data.data._id);
 			}
 		} catch (err) {
 			console.log(err);

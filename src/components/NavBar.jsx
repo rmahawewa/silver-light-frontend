@@ -12,6 +12,11 @@ const NavBar = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [itemSwitch, setItemSwitch] = useState("");
+	const [post_id, setPostid] = useState("");
+
+	const handlePostidChange = (value) => {
+		setPostid(value);
+	};
 
 	const handleLogout = async () => {
 		try {
@@ -70,6 +75,7 @@ const NavBar = () => {
 								<li>
 									<span
 										onClick={() => {
+											handlePostidChange("");
 											setItemSwitch("post");
 											document.getElementById("my_modal_1").showModal();
 										}}
@@ -168,11 +174,18 @@ const NavBar = () => {
 			<dialog id="my_modal_1" className="modal">
 				<div className="modal-box w-11/12 max-w-5xl">
 					{itemSwitch === "image" && <NewImage />}
-					{itemSwitch === "post" && <NewPost />}
+					{itemSwitch === "post" && (
+						<NewPost
+							post_id={post_id}
+							handlePostidChange={handlePostidChange}
+						/>
+					)}
 					<div className="modal-action">
 						<form method="dialog">
 							{/* if there is a button in form, it will close the modal */}
-							<button className="btn">Close</button>
+							<div>
+								<button className="btn">Close</button>
+							</div>
 						</form>
 					</div>
 				</div>
