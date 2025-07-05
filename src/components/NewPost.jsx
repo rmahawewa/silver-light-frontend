@@ -24,6 +24,13 @@ const NewPost = ({ post_id, handlePostidChange }) => {
 
 	useEffect(() => {
 		setPostId(post_id);
+		if (post_id === "") {
+			setTitle("");
+			setCategory("");
+			setDescription("");
+			setCategories([]);
+			setImageIds([]);
+		}
 		console.log(postId);
 	}, [post_id]);
 
@@ -97,7 +104,6 @@ const NewPost = ({ post_id, handlePostidChange }) => {
 				dispatch(addOnePost(post));
 			}
 			if (res.data.data._id) {
-				// setPostId(res.data.data._id);
 				handlePostidChange(res.data.data._id);
 			}
 		} catch (err) {

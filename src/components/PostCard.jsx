@@ -10,8 +10,8 @@ const PostCard = ({ postId }) => {
 	const user = useSelector((store) => store.user);
 	const [reaction, setReaction] = useState("");
 	const [reactors, setReactors] = useState([]);
-	const [comment, setComment] = useState("");
-	const [postComments, setPostComments] = useState([]);
+	// const [comment, setComment] = useState("");
+	// const [postComments, setPostComments] = useState([]);
 	const dispatch = useDispatch();
 	const post = useSelector((store) =>
 		store.postfeed.find((pt) => pt._id === postId)
@@ -39,7 +39,6 @@ const PostCard = ({ postId }) => {
 				).status
 		);
 		console.log(post);
-		getPostComments();
 	}, [post, postId, userConnections]);
 
 	const findSimilarReactionCount = (type) => {
@@ -133,37 +132,6 @@ const PostCard = ({ postId }) => {
 				(r) => r.fromUserId === user._id || r.toUserId === user._id
 			)
 		);
-	};
-
-	const getPostComments = async () => {
-		try {
-			const res = await axios.get(BASE_URL + "/postcomment/" + postId, {
-				withCredentials: true,
-			});
-			setPostComments(res.data.data);
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
-	const saveComment = async (parentCommentId, event) => {
-		try {
-			if (event.key === "Enter") {
-				const res = await axios.post(
-					BASE_URL + "/postcomment/save",
-					{ postId, parentCommentId, comment, commentByUser: user._id },
-					{ withCredentials: true }
-				);
-				console.log(res);
-				if (res) {
-					getPostComments();
-					console.log(postComments);
-					setComment("");
-				}
-			}
-		} catch (err) {
-			console.log(err);
-		}
 	};
 
 	return (
@@ -347,19 +315,7 @@ const PostCard = ({ postId }) => {
 						</p>
 					)}
 					<div className="postComments my-5">
-						<input
-							type="text"
-							placeholder="Add a new coment"
-							className="input"
-							value={comment}
-							onChange={(e) => setComment(e.target.value)}
-							onKeyUp={(e) => saveComment(0, e)}
-						/>
-						{postComments && (
-							<div className="my-5">
-								<PostComments comments={postComments} />
-							</div>
-						)}
+						<PostComments postId={postId} />
 					</div>
 				</div>
 			</div>
