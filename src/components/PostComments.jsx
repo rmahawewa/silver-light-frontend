@@ -72,7 +72,12 @@ const PostComments = ({ postId }) => {
 				<>
 					<ol>
 						{rootComments.map((id) => (
-							<CommentTree key={id} commentId={id} comments={postComments} />
+							<CommentTree
+								key={id}
+								postId={postId}
+								commentId={id}
+								comments={postComments}
+							/>
 						))}
 					</ol>
 				</>
@@ -83,7 +88,7 @@ const PostComments = ({ postId }) => {
 	);
 };
 
-const CommentTree = ({ commentId, comments }) => {
+const CommentTree = ({ postId, commentId, comments }) => {
 	const currentComment = comments.find((c) => c._id === commentId);
 	const childCommentIds = currentComment.childCommentIds;
 
@@ -101,17 +106,39 @@ const CommentTree = ({ commentId, comments }) => {
 					))}
 				</ol>
 			)}
-			<Reply parentId={commentId} />
+			<Reply postId={postId} parentId={commentId} />
 		</li>
 	);
 };
 
-const Reply = ({ parentId }) => {
+const Reply = ({ postId, parentId }) => {
 	const [reply, setReply] = useState("");
-	const saveComment = (event) => {
+
+	const getPostComments = async () => {
+		try {
+			const res = await axios.get(BASE_URL + "/postcomment/" + postId, {
+				withCredentials: true,
+			});
+			setPostComments(res.data.data);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const saveComment = async (event) => {
 		try {
 			if (event.key === "Enter") {
-				console.log(reply);
+				const res = await axios.post(
+					BASE_URL + "/postcomment/save",
+					{ postId, parentId, reply },
+					{ withCredentials: true }
+				);
+				console.log(res);
+				if (res) {
+					getPostComments();
+					console.log(postComments);
+					setReply("");
+				}
 			}
 		} catch (err) {}
 	};
