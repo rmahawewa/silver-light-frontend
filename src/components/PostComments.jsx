@@ -6,12 +6,7 @@ const PostComments = ({ postId }) => {
 	const [comment, setComment] = useState("");
 	const [postComments, setPostComments] = useState([]);
 	const [rootComments, setRootComments] = useState([]);
-	///////////////////////
-	// console.log(postComments);
-	// const commentsArr = comments.comments;
 
-	console.log(rootComments);
-	//////////////////////////
 	useEffect(() => {
 		getPostComments();
 	}, []);
@@ -42,10 +37,8 @@ const PostComments = ({ postId }) => {
 					{ postId, parentCommentId, comment },
 					{ withCredentials: true }
 				);
-				console.log(res);
 				if (res) {
 					getPostComments();
-					console.log(postComments);
 					setComment("");
 				}
 			}
@@ -63,11 +56,7 @@ const PostComments = ({ postId }) => {
 				onChange={(e) => setComment(e.target.value)}
 				onKeyUp={(e) => saveComment(0, e)}
 			/>
-			{/* {postComments && (
-				<div className="my-5">
-					<PostComments comments={postComments} />
-				</div>
-			)} */}
+
 			{rootComments.length > 0 ? (
 				<>
 					<ol>
@@ -77,6 +66,7 @@ const PostComments = ({ postId }) => {
 								postId={postId}
 								commentId={id}
 								comments={postComments}
+								findPostComments={getPostComments}
 							/>
 						))}
 					</ol>
@@ -88,56 +78,67 @@ const PostComments = ({ postId }) => {
 	);
 };
 
-const CommentTree = ({ postId, commentId, comments }) => {
+const CommentTree = ({ postId, commentId, comments, findPostComments }) => {
 	const currentComment = comments.find((c) => c._id === commentId);
 	const childCommentIds = currentComment.childCommentIds;
+	const [replyId, setReplyId] = useState("");
+
+	const handleReplyId = (id) => {
+		setReplyId(id);
+	};
 
 	return (
 		<li>
-			{currentComment.comment}
+			{currentComment.comment + " "}
+			<span
+				className="cursor-pointer"
+				onClick={() => handleReplyId(currentComment._id)}
+			>
+				Reply
+			</span>
+			{replyId === currentComment._id && (
+				<div>
+					<Reply
+						postId={postId}
+						parentId={commentId}
+						changeReplyId={handleReplyId}
+						findPostComments={findPostComments}
+					/>
+				</div>
+			)}
+
 			{childCommentIds.length > 0 && (
 				<ol>
 					{childCommentIds.map((childId) => (
 						<CommentTree
 							key={childId}
+							postId={postId}
 							commentId={childId}
 							comments={comments}
+							findPostComments={findPostComments}
 						/>
 					))}
 				</ol>
 			)}
-			<Reply postId={postId} parentId={commentId} />
 		</li>
 	);
 };
 
-const Reply = ({ postId, parentId }) => {
+const Reply = ({ postId, parentId, changeReplyId, findPostComments }) => {
 	const [reply, setReply] = useState("");
-
-	const getPostComments = async () => {
-		try {
-			const res = await axios.get(BASE_URL + "/postcomment/" + postId, {
-				withCredentials: true,
-			});
-			setPostComments(res.data.data);
-		} catch (err) {
-			console.log(err);
-		}
-	};
 
 	const saveComment = async (event) => {
 		try {
 			if (event.key === "Enter") {
 				const res = await axios.post(
 					BASE_URL + "/postcomment/save",
-					{ postId, parentId, reply },
+					{ postId, parentCommentId: parentId, comment: reply },
 					{ withCredentials: true }
 				);
-				console.log(res);
 				if (res) {
-					getPostComments();
-					console.log(postComments);
+					findPostComments();
 					setReply("");
+					changeReplyId("");
 				}
 			}
 		} catch (err) {}
