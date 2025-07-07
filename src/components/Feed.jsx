@@ -11,6 +11,7 @@ import ImageCard from "./ImageCard";
 const Feed = () => {
 	const dispatch = useDispatch();
 	const feedData = useSelector((store) => store.imagefeed);
+	const postData = useSelector((store) => store.postfeed);
 
 	const getFeed = async () => {
 		// if (feedData) return; // this output null
@@ -58,6 +59,7 @@ const Feed = () => {
 						<ImageCard imageId={img._id} />
 					</div>
 				))}
+			{postData}
 		</>
 	);
 };

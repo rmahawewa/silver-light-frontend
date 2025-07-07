@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { format, isToday, isYesterday } from "date-fns";
+import SendFriendRequest from "./UserFunctions/SendFriendRequest";
 
 const PostComments = ({ postId }) => {
 	const [comment, setComment] = useState("");
@@ -122,7 +123,7 @@ const CommentTree = ({ postId, commentId, comments, findPostComments }) => {
 						<div> */}
 							<button
 								className="btn btn-square btn-ghost btn-xs mx-1"
-								// onClick={() => sendFriendRequest(r._id)}
+								onClick={() => SendFriendRequest(r._id)}
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
