@@ -7,11 +7,14 @@ import { addConnectionFeed } from "../utils/connectionRequestSlice";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import ImageCard from "./ImageCard";
+import PostCard from "./PostCard";
 
 const Feed = () => {
 	const dispatch = useDispatch();
 	const feedData = useSelector((store) => store.imagefeed);
 	const postData = useSelector((store) => store.postfeed);
+
+	console.log(postData);
 
 	const getFeed = async () => {
 		// if (feedData) return; // this output null
@@ -19,8 +22,8 @@ const Feed = () => {
 			const res = await axios.get(BASE_URL + "/feed", {
 				withCredentials: true,
 			});
-			// console.log(res);
-			// console.log(res.data.imageData);
+			console.log(res.data);
+			// console.log(res.data.postData);
 			dispatch(addImageFeed(res.data.imageData));
 			dispatch(addPostFeed(res.data.postData));
 			const postComments = await axios.get(BASE_URL + "/feed/postcomments", {
@@ -56,10 +59,15 @@ const Feed = () => {
 			{feedData &&
 				feedData.map((img) => (
 					<div key={img._id} className=" flex justify-center py-10">
-						<ImageCard imageId={img._id} />
+						<ImageCard key={img._id} imageId={img._id} />
 					</div>
 				))}
-			{postData}
+			{postData &&
+				postData.map((post) => (
+					<div key={post._id} className="flex justify-center py-10">
+						<PostCard key={post._id} postId={post._id} />
+					</div>
+				))}
 		</>
 	);
 };

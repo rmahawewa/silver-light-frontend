@@ -18,7 +18,7 @@ const PostComments = ({ postId }) => {
 			postComments.length > 0 &&
 			postComments.filter((c) => c.parentCommentId === null).map((c) => c._id);
 		setRootComments(rComments);
-		console.log(postComments);
+		console.log(rComments);
 	}, [postComments]);
 
 	const getPostComments = async () => {
@@ -60,11 +60,11 @@ const PostComments = ({ postId }) => {
 				onKeyUp={(e) => saveComment(0, e)}
 			/>
 
-			{rootComments.length > 0 ? (
+			{rootComments && rootComments.length > 0 ? (
 				<>
 					<ol>
 						{rootComments.map((id) => (
-							<div className="my-5">
+							<div key={id} className="my-5">
 								<CommentTree
 									key={id}
 									postId={postId}
@@ -84,14 +84,15 @@ const PostComments = ({ postId }) => {
 };
 
 const CommentTree = ({ postId, commentId, comments, findPostComments }) => {
-	const currentComment = comments.find((c) => c._id === commentId);
-	const childCommentIds = currentComment.childCommentIds;
+	const currentComment = comments?.find((c) => c._id === commentId);
+	const childCommentIds = currentComment?.childCommentIds;
 	const [replyId, setReplyId] = useState("");
-	const commentDate = isToday(currentComment.updatedAt)
+	const commentDate = isToday(currentComment?.updatedAt)
 		? "Today"
-		: isYesterday(currentComment.updatedAt)
+		: isYesterday(currentComment?.updatedAt)
 		? "Yesterday"
-		: format(currentComment.updatedAt);
+		: // : format(currentComment?.updatedAt, "yyyy/MM/dd");
+		  currentComment?.updatedAt;
 
 	const handleReplyId = (id) => {
 		setReplyId(id);
@@ -102,7 +103,7 @@ const CommentTree = ({ postId, commentId, comments, findPostComments }) => {
 			<div className="">
 				<div>
 					<div className="flex justify-between w-full py-4 input input-xs">
-						<div>{currentComment.commentByUser.userName}</div>
+						<div>{currentComment?.commentByUser?.userName}</div>
 						<div>{commentDate}</div>
 						<div>
 							<button className="btn btn-square btn-ghost btn-xs mx-1">
@@ -137,17 +138,17 @@ const CommentTree = ({ postId, commentId, comments, findPostComments }) => {
 						</div>
 					</div>
 					<div className="flex justify-between w-full input input-m">
-						{currentComment.comment + " "}
+						{currentComment?.comment + " "}
 						<span
 							className="cursor-pointer"
-							onClick={() => handleReplyId(currentComment._id)}
+							onClick={() => handleReplyId(currentComment?._id)}
 						>
 							Reply
 						</span>
 					</div>
 				</div>
 
-				{replyId === currentComment._id && (
+				{replyId === currentComment?._id && (
 					<div>
 						<Reply
 							postId={postId}
@@ -158,7 +159,7 @@ const CommentTree = ({ postId, commentId, comments, findPostComments }) => {
 					</div>
 				)}
 
-				{childCommentIds.length > 0 && (
+				{childCommentIds?.length > 0 && (
 					<div className="collapse bg-base-100 border-base-300 border">
 						<input type="checkbox" />
 						<div className="collapse-title font-semibold">
@@ -179,7 +180,7 @@ const CommentTree = ({ postId, commentId, comments, findPostComments }) => {
 						</div>
 						<div className="collapse-content text-sm">
 							<ol>
-								{childCommentIds.map((childId) => (
+								{childCommentIds?.map((childId) => (
 									<CommentTree
 										key={childId}
 										postId={postId}

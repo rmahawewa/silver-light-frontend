@@ -147,27 +147,28 @@ const PostCard = ({ postId }) => {
 	return (
 		<>
 			<div className="card bg-base-100 w-200 shadow-sm">
-				{post && post.photos && (
+				{post && post.images && (
 					<figure>
 						<div className="carousel w-full">
-							{post.photos.map((p, index) => (
+							{post.images.map((p, index) => (
 								<div
 									key={p._id}
 									id={"slide" + (index + 1)}
 									className="carousel-item relative w-full"
 								>
 									<img
-										key={p._id}
 										src={p.url}
-										className="w-full"
+										className="w-full object-cover"
+										style={{ maxHeight: "40em", aspectRatio: "20/9" }}
 										alt={p.photoTitle}
 									/>
-									{post.photos.length > 1 && (
+
+									{post.images.length > 1 && (
 										<div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
 											<a
 												href={
 													index === 0
-														? "#slide" + post.photos.length
+														? "#slide" + post.images.length
 														: "#slide" + index
 												}
 												className="btn btn-circle"
@@ -176,7 +177,7 @@ const PostCard = ({ postId }) => {
 											</a>
 											<a
 												href={
-													index === post.photos.length - 1
+													index === post.images.length - 1
 														? "#slide1"
 														: "#slide" + Number(index + 2)
 												}
@@ -204,7 +205,9 @@ const PostCard = ({ postId }) => {
 						<button
 							onClick={() => saveReaction("like")}
 							className={
-								reaction === "like" ? "btn btn-secondary" : "btn btn-primary"
+								reaction === "like"
+									? "btn btn-soft btn-primary"
+									: "btn btn-primary"
 							}
 						>
 							<Like />
@@ -214,7 +217,7 @@ const PostCard = ({ postId }) => {
 							onClick={() => saveReaction("familier")}
 							className={
 								reaction === "familier"
-									? "btn btn-secondary"
+									? "btn btn-soft btn-primary"
 									: "btn btn-primary"
 							}
 						>
@@ -224,7 +227,9 @@ const PostCard = ({ postId }) => {
 						<button
 							onClick={() => saveReaction("love")}
 							className={
-								reaction === "love" ? "btn btn-secondary" : "btn btn-primary"
+								reaction === "love"
+									? "btn btn-soft btn-primary"
+									: "btn btn-primary"
 							}
 						>
 							<Love />
@@ -233,7 +238,9 @@ const PostCard = ({ postId }) => {
 						<button
 							onClick={() => saveReaction("aTrue")}
 							className={
-								reaction === "aTrue" ? "btn btn-secondary" : "btn btn-primary"
+								reaction === "aTrue"
+									? "btn btn-soft btn-primary"
+									: "btn btn-primary"
 							}
 						>
 							<True />
@@ -243,7 +250,7 @@ const PostCard = ({ postId }) => {
 							onClick={() => saveReaction("wonderful")}
 							className={
 								reaction === "wonderful"
-									? "btn btn-secondary"
+									? "btn btn-soft btn-primary"
 									: "btn btn-primary"
 							}
 						>
@@ -254,7 +261,7 @@ const PostCard = ({ postId }) => {
 							onClick={() => saveReaction("iFeelJelousy")}
 							className={
 								reaction === "iFeelJelousy"
-									? "btn btn-secondary"
+									? "btn btn-soft btn-primary"
 									: "btn btn-primary"
 							}
 						>
@@ -283,8 +290,8 @@ const PostCard = ({ postId }) => {
 					</ul>
 					<div className="max-h-96 overflow-y-auto">
 						<ul className="list bg-base-100 rounded-box">
-							{reactors.length > 0 ? (
-								reactors.map((r) => (
+							{reactors?.length > 0 ? (
+								reactors?.map((r) => (
 									<li key={r._id} className="list-row">
 										<div>
 											<img

@@ -11,6 +11,7 @@ import Requests from "./components/Requests";
 import Settings from "./components/Settings";
 import NewImage from "./components/NewImage";
 import NewPost from "./components/NewPost";
+import Categories from "./components/Categories";
 
 function App() {
 	return (
@@ -27,6 +28,7 @@ function App() {
 								<Route path="/settings" element={<Settings />} />
 								<Route path="/new-image" element={<NewImage />} />
 								<Route path="/new-post" element={<NewPost />} />
+								<Route path="/categories" element={<Categories />} />
 							</Route>
 						</Routes>
 					</BrowserRouter>
