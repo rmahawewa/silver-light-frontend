@@ -6,6 +6,7 @@ import { removeUser } from "../utils/userSlice";
 import axios from "axios";
 import NewImage from "./NewImage";
 import NewPost from "./NewPost";
+import Categories from "./Categories";
 
 const NavBar = () => {
 	const user = useSelector((store) => store.user);
@@ -89,25 +90,28 @@ const NavBar = () => {
 						<button
 							className="btn btn-ghost btn-circle tooltip tooltip-left tooltip-primary"
 							data-tip="Categories"
+							onClick={() => {
+								document.getElementById("modal_categories").showModal();
+							}}
 						>
-							<Link to="/categories">
-								<div className="indicator">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										strokeWidth={1.5}
-										stroke="currentColor"
-										className="size-6"
-									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
-										/>
-									</svg>
-								</div>
-							</Link>
+							{/* <Link to="/categories"> */}
+							<div className="indicator">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									strokeWidth={1.5}
+									stroke="currentColor"
+									className="size-6"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+									/>
+								</svg>
+							</div>
+							{/* </Link> */}
 						</button>
 
 						<button
@@ -191,6 +195,23 @@ const NavBar = () => {
 						</form>
 					</div>
 				</div>
+			</dialog>
+			<dialog id="modal_categories" className="modal">
+				<div className="modal-box">
+					<ul className="list bg-base-100 rounded-box">
+						<li className="p-4 pb-2 text-s opacity-60 tracking-wide">
+							All the Categories
+						</li>
+					</ul>
+					<div className="max-h-96 overflow-y-auto">
+						<ul className="list bg-base-100 rounded-box">
+							<Categories />
+						</ul>
+					</div>
+				</div>
+				<form method="dialog" className="modal-backdrop">
+					<button>close</button>
+				</form>
 			</dialog>
 		</>
 	);

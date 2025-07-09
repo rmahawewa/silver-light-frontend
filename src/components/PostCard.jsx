@@ -341,7 +341,7 @@ const PostCard = ({ postId }) => {
 								))
 							) : (
 								<li className="p-4 text-center text-sm opacity-70">
-									No users found with this reaction.
+									No users found with for this reaction.
 								</li>
 							)}
 						</ul>

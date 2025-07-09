@@ -20,21 +20,26 @@ const Categories = () => {
 		getAllCategories();
 	}, []);
 
+	const categoriesButtonClick = async (category) => {
+		try {
+			const res = await axios.post(
+				BASE_URL + "/category/allByCategory",
+				{ categoryName: category },
+				{ withCredentials: true }
+			);
+		} catch (err) {}
+	};
+
 	return (
 		<div>
-			<ul className="list bg-base-100 rounded-box shadow-md">
-				<li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
-					Most played songs this week
-				</li>
-				{categories &&
-					categories.map((categ, index) => (
-						<li key={index} className="list-row">
-							<button className="btn  btn-ghost">
-								<div>{categ}</div>
-							</button>
-						</li>
-					))}
-			</ul>
+			{categories &&
+				categories.map((categ, index) => (
+					<li key={index} className="list-row flex align-center justify-center">
+						<button className="btn  btn-ghost">
+							<div>{categ}</div>
+						</button>
+					</li>
+				))}
 		</div>
 	);
 };
