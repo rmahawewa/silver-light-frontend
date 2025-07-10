@@ -8,20 +8,27 @@ import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import ImageCard from "./ImageCard";
 import PostCard from "./PostCard";
+import { useParams } from "react-router-dom";
 
 const Feed = () => {
 	const dispatch = useDispatch();
 	const feedData = useSelector((store) => store.imagefeed);
 	const postData = useSelector((store) => store.postfeed);
+	const { category } = useParams();
 
-	console.log(postData);
+	console.log(category);
 
-	const getFeed = async () => {
+	const getFeed = async (category) => {
 		// if (feedData) return; // this output null
+		console.log(category); // logs as undefined
 		try {
-			const res = await axios.get(BASE_URL + "/feed", {
-				withCredentials: true,
-			});
+			const res = await axios.post(
+				BASE_URL + "/feed",
+				{ categ: category },
+				{
+					withCredentials: true,
+				}
+			);
 			console.log(res.data);
 			// console.log(res.data.postData);
 			dispatch(addImageFeed(res.data.imageData));
@@ -46,7 +53,7 @@ const Feed = () => {
 	};
 
 	useEffect(() => {
-		getFeed();
+		getFeed(category);
 		getConnections();
 	}, []);
 

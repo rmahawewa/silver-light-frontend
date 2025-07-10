@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
+import { Link } from "react-router-dom";
 
 const Categories = () => {
 	const [categories, setCategories] = useState([]);
@@ -20,24 +21,19 @@ const Categories = () => {
 		getAllCategories();
 	}, []);
 
-	const categoriesButtonClick = async (category) => {
-		try {
-			const res = await axios.post(
-				BASE_URL + "/category/allByCategory",
-				{ categoryName: category },
-				{ withCredentials: true }
-			);
-		} catch (err) {}
-	};
-
 	return (
 		<div>
 			{categories &&
 				categories.map((categ, index) => (
 					<li key={index} className="list-row flex align-center justify-center">
-						<button className="btn  btn-ghost">
-							<div>{categ}</div>
-						</button>
+						<Link to={"/" + categ}>
+							<button
+								className="btn  btn-ghost"
+								onClick={() => categoriesButtonClick(categ)}
+							>
+								<div>{categ}</div>
+							</button>
+						</Link>
 					</li>
 				))}
 		</div>
