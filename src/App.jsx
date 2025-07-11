@@ -21,7 +21,7 @@ function App() {
 					<BrowserRouter basename="/">
 						<Routes>
 							<Route path="/" element={<Body />}>
-								<Route path="/:category" element={<Feed />} />
+								<Route path="/" element={<Feed />} />
 								<Route path="/login" element={<Login />} />
 								<Route path="/connections" element={<Connections />} />
 								<Route path="/conn-requests" element={<Requests />} />
