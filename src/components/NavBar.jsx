@@ -205,7 +205,7 @@ const NavBar = () => {
 					</ul>
 					<div className="max-h-96 overflow-y-auto">
 						<ul className="list bg-base-100 rounded-box">
-							{/* <Categories /> */}
+							<Categories />
 						</ul>
 					</div>
 				</div>

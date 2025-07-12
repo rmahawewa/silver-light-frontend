@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import ImageCard from "./ImageCard";
 import PostCard from "./PostCard";
 import { GetFeed, GetConnections } from "./UserFunctions/GetFeed";
+import { useParams } from "react-router-dom";
 
-const Feed = () => {
+const CategoryFeed = () => {
 	const dispatch = useDispatch();
 	const feedData = useSelector((store) => store.imagefeed);
 	const postData = useSelector((store) => store.postfeed);
-	const category = "category test";
+	const { category } = useParams();
 	console.log(feedData);
-
 	useEffect(() => {
 		GetFeed(dispatch, category);
 		GetConnections(dispatch);
@@ -22,8 +22,7 @@ const Feed = () => {
 
 	return (
 		<>
-			{feedData != {} &&
-				feedData &&
+			{feedData &&
 				feedData.map((img) => (
 					<div key={img._id} className=" flex justify-center py-10">
 						<ImageCard key={img._id} imageId={img._id} />
@@ -39,4 +38,4 @@ const Feed = () => {
 	);
 };
 
-export default Feed;
+export default CategoryFeed;

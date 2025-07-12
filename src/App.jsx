@@ -12,6 +12,7 @@ import Settings from "./components/Settings";
 import NewImage from "./components/NewImage";
 import NewPost from "./components/NewPost";
 import Categories from "./components/Categories";
+import CategoryFeed from "./components/CategoryFeed";
 
 function App() {
 	return (
@@ -29,6 +30,10 @@ function App() {
 								<Route path="/new-image" element={<NewImage />} />
 								<Route path="/new-post" element={<NewPost />} />
 								<Route path="/categories" element={<Categories />} />
+								<Route
+									path="/category-feed/:category"
+									element={<CategoryFeed />}
+								/>
 							</Route>
 						</Routes>
 					</BrowserRouter>

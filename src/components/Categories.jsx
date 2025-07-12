@@ -26,11 +26,8 @@ const Categories = () => {
 			{categories &&
 				categories.map((categ, index) => (
 					<li key={index} className="list-row flex align-center justify-center">
-						<Link to={"/" + categ}>
-							<button
-								className="btn  btn-ghost"
-								onClick={() => categoriesButtonClick(categ)}
-							>
+						<Link to={"/category-feed/" + categ}>
+							<button className="btn  btn-ghost">
 								<div>{categ}</div>
 							</button>
 						</Link>
