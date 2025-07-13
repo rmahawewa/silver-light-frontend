@@ -11,7 +11,9 @@ const CategoryFeed = () => {
 	const postData = useSelector((store) => store.postfeed);
 	const { category } = useParams();
 	console.log(feedData);
+	console.log(postData);
 	useEffect(() => {
+		console.log("test12345");
 		GetFeed(dispatch, category);
 		GetConnections(dispatch);
 	}, []);

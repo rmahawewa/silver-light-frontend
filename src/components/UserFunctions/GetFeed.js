@@ -7,7 +7,7 @@ import { addConnectionFeed } from "../../utils/connectionRequestSlice";
 import { BASE_URL } from "../../utils/constants";
 
 export const GetFeed = async (dispatch, category) => {
-	if (feedData) return; // this output null
+	// if (feedData) return; // this output null
 	console.log(category);
 	try {
 		const res = await axios.post(
