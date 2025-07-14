@@ -16,7 +16,7 @@ const CategoryFeed = () => {
 		console.log("test12345");
 		GetFeed(dispatch, category);
 		GetConnections(dispatch);
-	}, []);
+	}, [category]);
 
 	if (!feedData) return;
 	if (feedData.length === 0)
