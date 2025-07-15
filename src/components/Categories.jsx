@@ -21,16 +21,47 @@ const Categories = () => {
 		getAllCategories();
 	}, []);
 
+	const closeModel = () => {
+		const modal = document.getElementById("modal_categories");
+		if (modal instanceof HTMLDialogElement) {
+			modal.close();
+		}
+	};
+
 	return (
+		// <div>
+		// 	{categories &&
+		// 		categories.map((categ, index) => (
+		// 			<li key={index} className="list-row flex align-center justify-center">
+		// 				<div className="modal-action">
+		// 					<form method="dialog">
+		// 						{/* if there is a button in form, it will close the modal */}
+
+		// 						<button className="btn  btn-ghost">
+		// 							<Link to={"/category-feed/" + categ} key={index}>
+		// 								<div>{categ}</div>
+		// 							</Link>
+		// 						</button>
+		// 					</form>
+		// 				</div>
+		// 			</li>
+		// 		))}
+		// </div>
 		<div>
 			{categories &&
 				categories.map((categ, index) => (
 					<li key={index} className="list-row flex align-center justify-center">
-						<Link to={"/category-feed/" + categ}>
-							<button className="btn  btn-ghost">
-								<div>{categ}</div>
-							</button>
-						</Link>
+						<form method="dialog" className="w-full">
+							<Link
+								to={"/category-feed/" + categ}
+								className="w-full"
+								onClick={closeModel}
+							>
+								<button className="btn btn-ghost w-full" type="submit">
+									<div>{categ}</div>
+								</button>
+							</Link>
+						</form>
 					</li>
 				))}
 		</div>

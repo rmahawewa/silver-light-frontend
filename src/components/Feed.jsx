@@ -23,7 +23,7 @@ const Feed = () => {
 
 	return (
 		<>
-			{/* {feedData != {} &&
+			{feedData != {} &&
 				feedData &&
 				feedData.map((img) => (
 					<div key={img._id} className=" flex justify-center py-10">
@@ -35,7 +35,7 @@ const Feed = () => {
 					<div key={post._id} className="flex justify-center py-10">
 						<PostCard key={post._id} postId={post._id} />
 					</div>
-				))} */}
+				))}
 		</>
 	);
 };
