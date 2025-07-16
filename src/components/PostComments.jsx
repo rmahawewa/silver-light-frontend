@@ -87,12 +87,12 @@ const CommentTree = ({ postId, commentId, comments, findPostComments }) => {
 	const currentComment = comments?.find((c) => c._id === commentId);
 	const childCommentIds = currentComment?.childCommentIds;
 	const [replyId, setReplyId] = useState("");
-	const commentDate = isToday(currentComment?.updatedAt)
+	const commentDate = isToday(currentComment?.createdAt)
 		? "Today"
-		: isYesterday(currentComment?.updatedAt)
+		: isYesterday(currentComment?.createdAt)
 		? "Yesterday"
-		: // : format(currentComment?.updatedAt, "yyyy/MM/dd");
-		  currentComment?.updatedAt;
+		: // : format(currentComment?.createdAt, "yyyy/MM/dd");
+		  currentComment?.createdAt;
 
 	const handleReplyId = (id) => {
 		setReplyId(id);
@@ -222,7 +222,7 @@ const Reply = ({ postId, parentId, changeReplyId, findPostComments }) => {
 			<input
 				type="text"
 				placeholder="Reply"
-				className="input input-sm"
+				className="input my-5 w-full"
 				value={reply}
 				onChange={(e) => setReply(e.target.value)}
 				onKeyUp={(e) => saveComment(e)}

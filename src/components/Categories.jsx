@@ -29,24 +29,6 @@ const Categories = () => {
 	};
 
 	return (
-		// <div>
-		// 	{categories &&
-		// 		categories.map((categ, index) => (
-		// 			<li key={index} className="list-row flex align-center justify-center">
-		// 				<div className="modal-action">
-		// 					<form method="dialog">
-		// 						{/* if there is a button in form, it will close the modal */}
-
-		// 						<button className="btn  btn-ghost">
-		// 							<Link to={"/category-feed/" + categ} key={index}>
-		// 								<div>{categ}</div>
-		// 							</Link>
-		// 						</button>
-		// 					</form>
-		// 				</div>
-		// 			</li>
-		// 		))}
-		// </div>
 		<div>
 			{categories &&
 				categories.map((categ, index) => (
