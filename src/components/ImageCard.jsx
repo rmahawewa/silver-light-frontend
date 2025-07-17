@@ -26,6 +26,7 @@ const ImageCard = ({ imageId }) => {
 		store.imagefeed.find((img) => img._id === imageId)
 	);
 	const userConnections = useSelector((store) => store.connectionfeed);
+	console.log(userConnections);
 	const modalId = `reactions_modal_${imageId}`;
 
 	useEffect(() => {
@@ -36,26 +37,15 @@ const ImageCard = ({ imageId }) => {
 		} else if (image && image.reactions && image.reactions.length === 0) {
 			console.log(`Image ID ${imageId} has an empty 'reactions' array.`);
 		}
-		// console.log(userConnections);
-		console.log(
-			userConnections.length > 0 &&
-				userConnections.find(
-					(r) => r.fromUserId === user._id || r.toUserId === user._id
-				).status
-		);
 	}, [image, imageId, userConnections]);
 
 	const findSimilarReactionCount = (type) => {
 		const result = image.reactions.filter((r) => r.reactionType === type);
 		return result.length;
-		// console.log(image);
-		// console.log(reaction);
-		// setReactionCount(result.length);
 	};
 
 	useEffect(() => {
 		if (image && user?._id) {
-			// console.log(image);
 			const userReaction = image?.reactions?.find(
 				(r) => r.reactedById === user._id
 			);
@@ -63,7 +53,6 @@ const ImageCard = ({ imageId }) => {
 				setReaction(userReaction.reactionType);
 			}
 		}
-		// findSimilarReactionCount();
 	}, [image, user]);
 
 	const saveReaction = async (r) => {
@@ -115,18 +104,6 @@ const ImageCard = ({ imageId }) => {
 		// console.log(reactors);
 		if (reactors.length > 0) document.getElementById(modalId).showModal();
 	}, [reactors]);
-
-	// const SendFriendRequest = async (receiverId) => {
-	// 	try {
-	// 		const responce = await axios.post(
-	// 			BASE_URL + "/request/send",
-	// 			{ toUserId: receiverId },
-	// 			{ withCredentials: true }
-	// 		);
-	// 		console.log(responce);
-	// 		dispatch(addNewConnectionRequest(responce.data.data));
-	// 	} catch (err) {}
-	// };
 
 	const getConnectionStatus = () => {
 		return (

@@ -1,24 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { addConnectionFeed } from "../utils/connectionRequestSlice";
+import Message from "./icons/Message";
+import ActiveMessage from "./icons/ActiveMessage";
 
 const Connections = () => {
-	const [connecs, setConnecs] = useState([]);
-	const getConnections = async () => {
-		const res = await axios.get(BASE_URL + "/request/connections", {
-			withCredentials: true,
-		});
-		console.log(res.data.connections);
-		setConnecs(res.data.connections);
-	};
+	// const [connecs, setConnecs] = useState([]);
+	// const dispatch = useDispatch();
+	const loggedInUsr = useSelector((store) => store.user)._id;
+	console.log(loggedInUsr);
+	const connecs = useSelector((store) => store.connectionfeed).filter(
+		(c) => c.status === "accepted"
+	);
+	console.log(connecs);
+	// const getConnections = async () => {
+	// 	const res = await axios.get(BASE_URL + "/request/user-requests", {
+	// 		withCredentials: true,
+	// 	});
+	// 	console.log(res.data.connections);
+	// 	// setConnecs(res.data.connections);
+	// 	dispatch(addConnectionFeed(res.data.connections));
+	// };
 
-	useEffect(() => {
-		try {
-			getConnections();
-		} catch (err) {
-			console.log(err);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	try {
+	// 		getConnections();
+	// 	} catch (err) {
+	// 		console.log(err);
+	// 	}
+	// }, []);
 	return (
 		<div>
 			<ul className="list bg-base-100 rounded-box shadow-md">
@@ -28,52 +40,11 @@ const Connections = () => {
 				{connecs.length > 0 ? (
 					connecs.map((c) => (
 						<li className="list-row" key={c._id}>
-							<div>
-								<img
-									className="size-10 rounded-box"
-									src={"https://img.daisyui.com/images/profile/demo/1@94.webp"}
-								/>
-							</div>
-							<div>
-								<div>Dio Lupa</div>
-								<div className="text-xs uppercase font-semibold opacity-60">
-									Remaining Reason
-								</div>
-							</div>
-							<button className="btn btn-square btn-ghost">
-								<svg
-									className="size-[1.2em]"
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-								>
-									<g
-										strokeLinejoin="round"
-										strokeLinecap="round"
-										strokeWidth="2"
-										fill="none"
-										stroke="currentColor"
-									>
-										<path d="M6 3L20 12 6 21 6 3z"></path>
-									</g>
-								</svg>
-							</button>
-							<button className="btn btn-square btn-ghost">
-								<svg
-									className="size-[1.2em]"
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-								>
-									<g
-										strokeLinejoin="round"
-										strokeLinecap="round"
-										strokeWidth="2"
-										fill="none"
-										stroke="currentColor"
-									>
-										<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
-									</g>
-								</svg>
-							</button>
+							{c.fromUserId._id === loggedInUsr ? (
+								<ConnectionView conn={c.toUserId} />
+							) : (
+								<ConnectionView conn={c.fromUserId} />
+							)}
 						</li>
 					))
 				) : (
@@ -81,6 +52,25 @@ const Connections = () => {
 				)}
 			</ul>
 		</div>
+	);
+};
+
+const ConnectionView = ({ conn }) => {
+	return (
+		<>
+			<div>
+				<img className="size-10 rounded-box" src={conn.photoUrl} />
+			</div>
+			<div>
+				<div>{conn.userName}</div>
+				<div className="text-xs font-semibold opacity-60">
+					Since: {conn.updatedAt}
+				</div>
+			</div>
+			<button className="btn btn-square btn-ghost">
+				<ActiveMessage />
+			</button>
+		</>
 	);
 };
 

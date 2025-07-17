@@ -14,7 +14,7 @@ const Feed = () => {
 
 	useEffect(() => {
 		GetFeed(dispatch, category);
-		// GetConnections(dispatch);
+		GetConnections(dispatch);
 	}, []);
 
 	if (!feedData) return;

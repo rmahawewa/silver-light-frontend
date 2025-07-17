@@ -42,12 +42,7 @@ const PostCard = ({ postId }) => {
 			console.log(`Post ID ${postId} has an empty 'post_reactions' array.`);
 		}
 		// console.log(userConnections);
-		console.log(
-			userConnections.length > 0 &&
-				userConnections.find(
-					(r) => r.fromUserId === user._id || r.toUserId === user._id
-				).status
-		);
+
 		console.log(post);
 	}, [post, postId, userConnections]);
 
