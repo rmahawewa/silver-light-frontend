@@ -13,6 +13,7 @@ import NewImage from "./components/NewImage";
 import NewPost from "./components/NewPost";
 import Categories from "./components/Categories";
 import CategoryFeed from "./components/CategoryFeed";
+import AllRequests from "./components/AllRequests";
 
 function App() {
 	return (
@@ -24,8 +25,8 @@ function App() {
 							<Route path="/" element={<Body />}>
 								<Route path="/" element={<Feed />} />
 								<Route path="/login" element={<Login />} />
-								<Route path="/connections" element={<Connections />} />
-								<Route path="/conn-requests" element={<Requests />} />
+								<Route path="/connections" element={<AllRequests />} />
+								<Route path="/conn-requests" element={<AllRequests />} />
 								<Route path="/settings" element={<Settings />} />
 								<Route path="/new-image" element={<NewImage />} />
 								<Route path="/new-post" element={<NewPost />} />

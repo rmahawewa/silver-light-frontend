@@ -2,75 +2,120 @@ import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { addConnectionFeed } from "../utils/connectionRequestSlice";
+import {
+	addConnectionFeed,
+	saveRespond,
+} from "../utils/connectionRequestSlice";
 import Message from "./icons/Message";
 import ActiveMessage from "./icons/ActiveMessage";
 
-const Connections = () => {
-	// const [connecs, setConnecs] = useState([]);
-	// const dispatch = useDispatch();
+const Connections = ({ status }) => {
 	const loggedInUsr = useSelector((store) => store.user)._id;
 	console.log(loggedInUsr);
 	const connecs = useSelector((store) => store.connectionfeed).filter(
-		(c) => c.status === "accepted"
+		(c) => c.status === status
 	);
 	console.log(connecs);
-	// const getConnections = async () => {
-	// 	const res = await axios.get(BASE_URL + "/request/user-requests", {
-	// 		withCredentials: true,
-	// 	});
-	// 	console.log(res.data.connections);
-	// 	// setConnecs(res.data.connections);
-	// 	dispatch(addConnectionFeed(res.data.connections));
-	// };
-
-	// useEffect(() => {
-	// 	try {
-	// 		getConnections();
-	// 	} catch (err) {
-	// 		console.log(err);
-	// 	}
-	// }, []);
 	return (
-		<div>
+		<div className="w-full m-10">
 			<ul className="list bg-base-100 rounded-box shadow-md">
 				<li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
-					Connections
+					{status === "sent" ? "Pending connections" : "Connections"}
 				</li>
 				{connecs.length > 0 ? (
 					connecs.map((c) => (
-						<li className="list-row" key={c._id}>
+						<li className="" key={c._id}>
 							{c.fromUserId._id === loggedInUsr ? (
-								<ConnectionView conn={c.toUserId} />
+								<ConnectionView
+									cid={c._id}
+									conn={c.toUserId}
+									direction={"to"}
+									status={status}
+								/>
 							) : (
-								<ConnectionView conn={c.fromUserId} />
+								<ConnectionView
+									cid={c._id}
+									conn={c.fromUserId}
+									direction={"from"}
+									status={status}
+								/>
 							)}
 						</li>
 					))
 				) : (
-					<div>You yet have no any connection</div>
+					<li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
+						<div>Currently empty</div>
+					</li>
 				)}
 			</ul>
 		</div>
 	);
 };
 
-const ConnectionView = ({ conn }) => {
+const ConnectionView = ({ cid, conn, direction, status }) => {
+	const dispatch = useDispatch();
+	const conReqs = useSelector((store) => store.connectionfeed);
+	const respondToConnectionRequest = async (id, status) => {
+		try {
+			const res = await axios.post(
+				BASE_URL + "/request/respond",
+				{ response: status, requestId: id },
+				{ withCredentials: true }
+			);
+			if (res) {
+				dispatch(saveRespond(res.data.data));
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	return (
-		<>
-			<div>
-				<img className="size-10 rounded-box" src={conn.photoUrl} />
-			</div>
-			<div>
-				<div>{conn.userName}</div>
-				<div className="text-xs font-semibold opacity-60">
-					Since: {conn.updatedAt}
+		conReqs && (
+			<div className="flex justify-between m-4 p-4 w-full mx-auto">
+				<div>
+					<div className="flex items-center">
+						<div>
+							<img className="size-10 rounded-box" src={conn.photoUrl} />
+						</div>
+						<div className="px-5">
+							<div>{conn.userName}</div>
+							<div className="text-xs font-semibold opacity-60">
+								Since: {conn.updatedAt}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div className="flex items-center justify-between gap-5 px-5">
+					<button className="btn btn-square btn-ghost">
+						<ActiveMessage />
+					</button>
+					{status === "sent" && (
+						<div>
+							{direction === "to" ? (
+								<span>Pending</span>
+							) : (
+								<div className="flex items-center justify-between gap-3">
+									<button
+										className="btn btn-primary"
+										onClick={() => respondToConnectionRequest(cid, "accepted")}
+									>
+										Accept
+									</button>
+									<button
+										className="btn btn-primary"
+										onClick={() => respondToConnectionRequest(cid, "rejected")}
+									>
+										Reject
+									</button>
+								</div>
+							)}
+						</div>
+					)}
 				</div>
 			</div>
-			<button className="btn btn-square btn-ghost">
-				<ActiveMessage />
-			</button>
-		</>
+		)
 	);
 };
 
