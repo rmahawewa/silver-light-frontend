@@ -8,7 +8,12 @@ const connectionRequestSlice = createSlice({
 			return action.payload;
 		},
 		addNewConnectionRequest: (state, action) => {
-			state.push(action.payload);
+			if (state.length === 0) {
+				return action.payload;
+			} else {
+				state.push(action.payload);
+				return state;
+			}
 		},
 		saveRespond: (state, action) => {
 			const request = action.payload;

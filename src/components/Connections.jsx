@@ -10,7 +10,7 @@ import Message from "./icons/Message";
 import ActiveMessage from "./icons/ActiveMessage";
 
 const Connections = ({ status }) => {
-	const loggedInUsr = useSelector((store) => store.user)._id;
+	const loggedInUsr = useSelector((store) => store.user)?._id;
 	console.log(loggedInUsr);
 	const connecs = useSelector((store) => store.connectionfeed).filter(
 		(c) => c.status === status

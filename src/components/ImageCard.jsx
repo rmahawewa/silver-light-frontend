@@ -109,7 +109,7 @@ const ImageCard = ({ imageId }) => {
 		return (
 			userConnections.length > 0 &&
 			userConnections.find(
-				(r) => r.fromUserId === user._id || r.toUserId === user._id
+				(r) => r.fromUserId._id === user._id || r.toUserId._id === user._id
 			)
 		);
 	};

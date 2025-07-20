@@ -35,7 +35,7 @@ export const GetConnections = async (dispatch) => {
 		const res = await axios.get(BASE_URL + "/request/user-requests", {
 			withCredentials: true,
 		});
-		// console.log(res.data.connections);
+		console.log(res.data.connections);
 		dispatch(addConnectionFeed(res.data.connections));
 	} catch (err) {}
 };

@@ -134,7 +134,7 @@ const PostCard = ({ postId }) => {
 		return (
 			userConnections.length > 0 &&
 			userConnections.find(
-				(r) => r.fromUserId === user._id || r.toUserId === user._id
+				(r) => r.fromUserId._id === user._id || r.toUserId._id === user._id
 			)
 		);
 	};
@@ -142,15 +142,16 @@ const PostCard = ({ postId }) => {
 	return (
 		<>
 			<div className="card bg-base-100 w-200 shadow-sm">
-				{post && post.images && (
+				{post && post.photos && (
 					<figure>
 						<div className="carousel w-full">
-							{post.images.map((p, index) => (
+							{post.photos.map((p, index) => (
 								<div
 									key={p._id}
 									id={"slide" + (index + 1)}
 									className="carousel-item relative w-full"
 								>
+									{/* {"test" + index} */}
 									<img
 										src={p.url}
 										className="w-full object-cover"
@@ -158,12 +159,12 @@ const PostCard = ({ postId }) => {
 										alt={p.photoTitle}
 									/>
 
-									{post.images.length > 1 && (
+									{post.photos.length > 1 && (
 										<div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
 											<a
 												href={
 													index === 0
-														? "#slide" + post.images.length
+														? "#slide" + post.photos.length
 														: "#slide" + index
 												}
 												className="btn btn-circle"
@@ -172,7 +173,7 @@ const PostCard = ({ postId }) => {
 											</a>
 											<a
 												href={
-													index === post.images.length - 1
+													index === post.photos.length - 1
 														? "#slide1"
 														: "#slide" + Number(index + 2)
 												}

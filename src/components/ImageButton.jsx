@@ -23,7 +23,11 @@ const ImageButton = ({ image, handleImageButtonClick }) => {
 				onClick={() => imageButtonClick()}
 			>
 				<img
-					style={{ width: "25em", height: "auto" }}
+					style={{
+						maxWidth: "100%",
+						maxHeight: "100%",
+						objectFit: "contain",
+					}}
 					src={image.url}
 					alt={image.photoTitle}
 				/>

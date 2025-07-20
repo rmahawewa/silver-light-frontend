@@ -179,7 +179,7 @@ const NewPost = ({ post_id, handlePostidChange }) => {
 			) : (
 				<>
 					<button
-						className="btn btn-success m-1"
+						className="btn btn-success my-15 mx-1"
 						onClick={() => setSelectImages(false)}
 					>
 						Select images
