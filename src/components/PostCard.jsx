@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { savepostreaction } from "../utils/postSlice";
 import { addNewConnectionRequest } from "../utils/connectionRequestSlice";
 import PostComments from "./PostComments";
-import ConnectionRequest from "./icons/ConnectionRequest";
-import Message from "./icons/Message";
+// import ConnectionRequest from "./icons/ConnectionRequest";
+// import Message from "./icons/Message";
 import {
 	Like,
 	Love,
@@ -15,6 +15,8 @@ import {
 	Wonderful,
 	IFeelJelousy,
 } from "./icons/Reactions";
+// import GetConnectionStatus from "./UserFunctions/GetConnectionStatus";
+import ReactorsList from "./ReactorsList";
 
 const PostCard = ({ postId }) => {
 	const user = useSelector((store) => store.user);
@@ -128,15 +130,6 @@ const PostCard = ({ postId }) => {
 			console.log(responce);
 			dispatch(addNewConnectionRequest(responce.data.data));
 		} catch (err) {}
-	};
-
-	const getConnectionStatus = () => {
-		return (
-			userConnections.length > 0 &&
-			userConnections.find(
-				(r) => r.fromUserId._id === user._id || r.toUserId._id === user._id
-			)
-		);
 	};
 
 	return (
@@ -278,7 +271,7 @@ const PostCard = ({ postId }) => {
 				</div>
 			</div>
 			<dialog id={modalId} className="modal">
-				<div className="modal-box">
+				{/* <div className="modal-box">
 					<ul className="list bg-base-100 rounded-box">
 						<li className="p-4 pb-2 text-s opacity-60 tracking-wide">
 							<span className="font-bold">{reaction}</span>'s by,
@@ -317,10 +310,11 @@ const PostCard = ({ postId }) => {
 														/>
 													</svg>
 												</button>
-												{!getConnectionStatus() && r._id !== user._id ? (
+												{!GetConnectionStatus(r._id, userConnections) &&
+												r._id !== user._id ? (
 													<button
 														className="btn btn-square btn-ghost"
-														onClick={() => sendFriendRequest(r._id)}
+														onClick={() => sendFriendRequest(dispatch, r._id)}
 													>
 														<ConnectionRequest />
 													</button>
@@ -345,7 +339,14 @@ const PostCard = ({ postId }) => {
 				</div>
 				<form method="dialog" className="modal-backdrop">
 					<button>close</button>
-				</form>
+				</form> */}
+				<ReactorsList
+					user={user}
+					reaction={reaction}
+					reactors={reactors}
+					userConnections={userConnections}
+					dispatch={dispatch}
+				/>
 			</dialog>
 		</>
 	);

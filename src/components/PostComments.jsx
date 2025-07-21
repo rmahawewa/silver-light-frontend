@@ -3,7 +3,8 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { format, isToday, isYesterday } from "date-fns";
 import SendFriendRequest from "./UserFunctions/SendFriendRequest";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import GetConnectionStatus from "./UserFunctions/GetConnectionStatus";
 
 const PostComments = ({ postId }) => {
 	const [comment, setComment] = useState("");
@@ -98,6 +99,8 @@ const CommentTree = ({ postId, commentId, comments, findPostComments }) => {
 		  currentComment?.createdAt;
 
 	const user = useSelector((store) => store.user)?._id;
+	const dispatch = useDispatch();
+	const userConnections = useSelector((store) => store.connectionfeed);
 
 	const handleReplyId = (id) => {
 		setReplyId(id);
@@ -142,21 +145,22 @@ const CommentTree = ({ postId, commentId, comments, findPostComments }) => {
 							{/* </div>
 						<div> */}
 
-							{!(user === commentedByUser) && (
-								<button
-									className="btn btn-square btn-ghost btn-xs mx-1"
-									onClick={() => SendFriendRequest(r._id)}
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 16 16"
-										fill="currentColor"
-										className="size-4"
+							{!GetConnectionStatus(commentedByUser, userConnections) &&
+								!(user === commentedByUser) && (
+									<button
+										className="btn btn-square btn-ghost btn-xs mx-1"
+										onClick={() => SendFriendRequest(dispatch, commentedByUser)}
 									>
-										<path d="M8.5 4.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 13c.552 0 1.01-.452.9-.994a5.002 5.002 0 0 0-9.802 0c-.109.542.35.994.902.994h8ZM12.5 3.5a.75.75 0 0 1 .75.75v1h1a.75.75 0 0 1 0 1.5h-1v1a.75.75 0 0 1-1.5 0v-1h-1a.75.75 0 0 1 0-1.5h1v-1a.75.75 0 0 1 .75-.75Z" />
-									</svg>
-								</button>
-							)}
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 16 16"
+											fill="currentColor"
+											className="size-4"
+										>
+											<path d="M8.5 4.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 13c.552 0 1.01-.452.9-.994a5.002 5.002 0 0 0-9.802 0c-.109.542.35.994.902.994h8ZM12.5 3.5a.75.75 0 0 1 .75.75v1h1a.75.75 0 0 1 0 1.5h-1v1a.75.75 0 0 1-1.5 0v-1h-1a.75.75 0 0 1 0-1.5h1v-1a.75.75 0 0 1 .75-.75Z" />
+										</svg>
+									</button>
+								)}
 						</div>
 					</div>
 					<div className="flex justify-between w-full input input-m">
