@@ -35,6 +35,10 @@ function App() {
 									path="/category-feed/:category"
 									element={<CategoryFeed />}
 								/>
+								<Route
+									path="/chat/:targetUserId/:targetUserName"
+									element={<Chat />}
+								/>
 							</Route>
 						</Routes>
 					</BrowserRouter>
