@@ -5,6 +5,7 @@ import { format, isToday, isYesterday } from "date-fns";
 import SendFriendRequest from "./UserFunctions/SendFriendRequest";
 import { useDispatch, useSelector } from "react-redux";
 import GetConnectionStatus from "./UserFunctions/GetConnectionStatus";
+import { Link } from "react-router-dom";
 
 const PostComments = ({ postId }) => {
 	const [comment, setComment] = useState("");
@@ -128,7 +129,15 @@ const CommentTree = ({ postId, commentId, comments, findPostComments }) => {
 						<div>{currentComment?.commentByUser?.userName}</div>
 						<div>{commentDate}</div>
 						<div>
-							<button className="btn btn-square btn-ghost btn-xs mx-1">
+							<Link
+								to={
+									"/chat/" +
+									currentComment?.commentByUser?._id +
+									"/" +
+									currentComment?.commentByUser?.userName
+								}
+								className="btn btn-square btn-ghost btn-xs mx-1"
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 16 16"
@@ -141,7 +150,7 @@ const CommentTree = ({ postId, commentId, comments, findPostComments }) => {
 										clipRule="evenodd"
 									/>
 								</svg>
-							</button>
+							</Link>
 							{/* </div>
 						<div> */}
 

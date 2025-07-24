@@ -14,6 +14,7 @@ import NewPost from "./components/NewPost";
 import Categories from "./components/Categories";
 import CategoryFeed from "./components/CategoryFeed";
 import AllRequests from "./components/AllRequests";
+import Chat from "./components/Chat";
 
 function App() {
 	return (
