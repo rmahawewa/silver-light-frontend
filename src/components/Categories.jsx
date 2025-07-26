@@ -2,8 +2,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Categories = () => {
+	const user = useSelector((store) => store.user)?._id;
 	const [categories, setCategories] = useState([]);
 	const getAllCategories = async () => {
 		try {
@@ -18,8 +20,8 @@ const Categories = () => {
 	};
 
 	useEffect(() => {
-		getAllCategories();
-	}, []);
+		user && getAllCategories() && console.log(user);
+	}, [user]);
 
 	const closeModel = () => {
 		const modal = document.getElementById("modal_categories");
@@ -29,24 +31,29 @@ const Categories = () => {
 	};
 
 	return (
-		<div>
-			{categories &&
-				categories.map((categ, index) => (
-					<li key={index} className="list-row flex align-center justify-center">
-						<form method="dialog" className="w-full">
-							<Link
-								to={"/category-feed/" + categ}
-								className="w-full"
-								onClick={closeModel}
-							>
-								<button className="btn btn-ghost w-full" type="submit">
-									<div>{categ}</div>
-								</button>
-							</Link>
-						</form>
-					</li>
-				))}
-		</div>
+		user && (
+			<div>
+				{categories &&
+					categories.map((categ, index) => (
+						<li
+							key={index}
+							className="list-row flex align-center justify-center"
+						>
+							<form method="dialog" className="w-full">
+								<Link
+									to={"/category-feed/" + categ}
+									className="w-full"
+									onClick={closeModel}
+								>
+									<button className="btn btn-ghost w-full" type="submit">
+										<div>{categ}</div>
+									</button>
+								</Link>
+							</form>
+						</li>
+					))}
+			</div>
+		)
 	);
 };
 

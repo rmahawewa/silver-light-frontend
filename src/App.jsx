@@ -15,6 +15,7 @@ import Categories from "./components/Categories";
 import CategoryFeed from "./components/CategoryFeed";
 import AllRequests from "./components/AllRequests";
 import Chat from "./components/Chat";
+import Profile from "./components/Profile";
 
 function App() {
 	return (
@@ -40,6 +41,7 @@ function App() {
 									path="/chat/:targetUserId/:targetUserName"
 									element={<Chat />}
 								/>
+								<Route path="/profile" element={<Profile />} />
 							</Route>
 						</Routes>
 					</BrowserRouter>
