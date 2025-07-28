@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { BASE_URL } from "../utils/constants";
 
 const Profile = () => {
 	const [isEditable, setIsEditable] = useState(true);
@@ -11,12 +12,40 @@ const Profile = () => {
 	const [userName, setUserName] = useState(user.userName);
 	const [birthday, setBirthday] = useState(user.birthday);
 	const [email, setEmail] = useState(user.email);
-	const [password, setPassword] = useState(user.password);
 	const [gender, setGender] = useState(user.gender);
 	const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
 	const [country, setCountry] = useState(user.country);
 	const [reagion, setReagion] = useState(user.reagion);
 	const [about, setAbout] = useState(user.about);
+
+	const saveDetails = async () => {
+		try {
+			const res = await axios.patch(
+				BASE_URL + "/update",
+				{
+					firstName,
+					lastName,
+					userName,
+					birthday,
+					email,
+					gender,
+					photoUrl,
+					country,
+					reagion,
+					about,
+				},
+				{ withCredentials: true }
+			);
+			console.log(res);
+			if (res.data.data) {
+				//dispatch the user store
+				//view message
+				setIsEditable(false);
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	};
 
 	return (
 		<div className="flex justify-center">
@@ -72,15 +101,6 @@ const Profile = () => {
 							onChange={(e) => onChange(setEmail(e.target.value))}
 						/>
 
-						<label className="label">Password</label>
-						<input
-							type="text"
-							className="input"
-							placeholder="Password"
-							value={password}
-							onChange={(e) => onChange(setPassword(e.target.value))}
-						/>
-
 						<label className="label">Gender</label>
 						<input
 							type="text"
@@ -126,42 +146,51 @@ const Profile = () => {
 							onChange={(e) => onChange(setAbout(e.target.value))}
 						/>
 
-						<button className="btn btn-neutral mt-4">Save</button>
+						<button
+							className="btn btn-neutral mt-4"
+							onClick={() => saveDetails()}
+						>
+							Save
+						</button>
 					</>
 				) : (
 					<>
 						<label className="label">First name</label>
-						<input type="text" className="input" placeholder="First name" />
+						<label>{firstName}</label>
 
 						<label className="label">Last name</label>
-						<input type="text" className="input" placeholder="Last name" />
+						<label>{lastName}</label>
 
 						<label className="label">User name</label>
-						<input type="text" className="input" placeholder="User name" />
+						<label>{userName}</label>
 
 						<label className="label">Birthday</label>
-						<input type="text" className="input" placeholder="Birthday" />
+						<label>{birthday}</label>
 
 						<label className="label">Email</label>
-						<input type="text" className="input" placeholder="Email" />
-
-						<label className="label">Password</label>
-						<input type="text" className="input" placeholder="Password" />
+						<label>{email}</label>
 
 						<label className="label">Gender</label>
-						<input type="text" className="input" placeholder="Gender" />
+						<label>{gender}</label>
 
 						<label className="label">Photo url</label>
-						<input type="text" className="input" placeholder="Photo url" />
+						<label>{photoUrl}</label>
 
 						<label className="label">Country</label>
-						<input type="text" className="input" placeholder="Country" />
+						<label>{country}</label>
 
 						<label className="label">Reagion</label>
-						<input type="text" className="input" placeholder="Reagion" />
+						<label>{reagion}</label>
 
 						<label className="label">About</label>
-						<input type="text" className="input" placeholder="About" />
+						<label>{about}</label>
+
+						<button
+							className="btn btn-neutral mt-4"
+							onClick={() => setIsEditable(true)}
+						>
+							Edit
+						</button>
 					</>
 				)}
 			</fieldset>
