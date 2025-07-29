@@ -2,21 +2,30 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
+import { addUser } from "../utils/userSlice";
 
 const Profile = () => {
 	const [isEditable, setIsEditable] = useState(true);
 	const user = useSelector((store) => store.user);
 	//user input fields
-	const [firstName, setFirstName] = useState(user.firstName);
-	const [lastName, setLastName] = useState(user.lastName);
-	const [userName, setUserName] = useState(user.userName);
-	const [birthday, setBirthday] = useState(user.birthday);
-	const [email, setEmail] = useState(user.email);
-	const [gender, setGender] = useState(user.gender);
-	const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
-	const [country, setCountry] = useState(user.country);
-	const [reagion, setReagion] = useState(user.reagion);
-	const [about, setAbout] = useState(user.about);
+	const [firstName, setFirstName] = useState(
+		user.firstName ? user.firstName : ""
+	);
+	const [lastName, setLastName] = useState(user.lastName ? user.lastName : "");
+	const [userName, setUserName] = useState(user.userName ? user.userName : "");
+	const [birthday, setBirthday] = useState(user.birthday ? user.birthday : "");
+	const [email, setEmail] = useState(user.email ? user.email : "");
+	const [gender, setGender] = useState(user.gender ? user.gender : "");
+	const [photoUrl, setPhotoUrl] = useState(user.photoUrl ? user.photoUrl : "");
+	const [country, setCountry] = useState(user.country ? user.country : "");
+	const [reagion, setReagion] = useState(user.reagion ? user.reagion : "");
+	const [about, setAbout] = useState(user.about ? user.about : "");
+
+	const dispatch = useDispatch();
+
+	const handleFileChange = () => {
+		setPhotoUrl(event.target.files[0]);
+	};
 
 	const saveDetails = async () => {
 		try {
@@ -36,10 +45,12 @@ const Profile = () => {
 				},
 				{ withCredentials: true }
 			);
-			console.log(res);
+			console.log(res.data.data);
 			if (res.data.data) {
 				//dispatch the user store
+				dispatch(addUser(res.data.data));
 				//view message
+
 				setIsEditable(false);
 			}
 		} catch (err) {
@@ -56,102 +67,109 @@ const Profile = () => {
 
 				{isEditable ? (
 					<>
-						<label className="label">First name</label>
-						<input
-							type="text"
-							className="input"
-							placeholder="First name"
-							value={firstName}
-							onChange={(e) => onChange(setFirstName(e.target.value))}
-						/>
+						<>
+							<label className="label">First name</label>
+							<input
+								type="text"
+								className="input"
+								placeholder="First name"
+								value={firstName}
+								onChange={(e) => setFirstName(e.target.value)}
+							/>
 
-						<label className="label">Last name</label>
-						<input
-							type="text"
-							className="input"
-							placeholder="Last name"
-							value={lastName}
-							onChange={(e) => onChange(setLastName(e.target.value))}
-						/>
+							<label className="label">Last name</label>
+							<input
+								type="text"
+								className="input"
+								placeholder="Last name"
+								value={lastName}
+								onChange={(e) => setLastName(e.target.value)}
+							/>
 
-						<label className="label">User name</label>
-						<input
-							type="text"
-							className="input"
-							placeholder="User name"
-							value={userName}
-							onChange={(e) => onChange(setUserName(e.target.value))}
-						/>
+							<label className="label">User name</label>
+							<input
+								type="text"
+								className="input"
+								placeholder="User name"
+								value={userName}
+								onChange={(e) => setUserName(e.target.value)}
+							/>
 
-						<label className="label">Birthday</label>
-						<input
-							type="text"
-							className="input"
-							placeholder="Birthday"
-							value={birthday}
-							onChange={(e) => onChange(setBirthday(e.target.value))}
-						/>
+							<label className="label">Photo url</label>
+							<input
+								type="file"
+								accept="image/*"
+								className="input"
+								placeholder="Photo url"
+								onChange={handleFileChange}
+							/>
 
-						<label className="label">Email</label>
-						<input
-							type="text"
-							className="input"
-							placeholder="Email"
-							value={email}
-							onChange={(e) => onChange(setEmail(e.target.value))}
-						/>
+							<label className="label">Birthday</label>
+							<input
+								type="date"
+								className="input"
+								placeholder="Birthday"
+								value={birthday}
+								onChange={(e) => setBirthday(e.target.value)}
+							/>
 
-						<label className="label">Gender</label>
-						<input
-							type="text"
-							className="input"
-							placeholder="Gender"
-							value={gender}
-							onChange={(e) => onChange(setGender(e.target.value))}
-						/>
+							<label className="label">Email</label>
+							<input
+								type="text"
+								className="input"
+								placeholder="Email"
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+							/>
 
-						<label className="label">Photo url</label>
-						<input
-							type="text"
-							className="input"
-							placeholder="Photo url"
-							value={photoUrl}
-							onChange={(e) => onChange(setPhotoUrl(e.target.value))}
-						/>
+							<label className="label">Gender</label>
+							<input
+								type="text"
+								className="input"
+								placeholder="Gender"
+								value={gender}
+								onChange={(e) => setGender(e.target.value)}
+							/>
 
-						<label className="label">Country</label>
-						<input
-							type="text"
-							className="input"
-							placeholder="Country"
-							value={country}
-							onChange={(e) => onChange(setCountry(e.target.value))}
-						/>
+							<label className="label">Country</label>
+							<input
+								type="text"
+								className="input"
+								placeholder="Country"
+								value={country}
+								onChange={(e) => setCountry(e.target.value)}
+							/>
 
-						<label className="label">Reagion</label>
-						<input
-							type="text"
-							className="input"
-							placeholder="Reagion"
-							value={reagion}
-							onChange={(e) => onChange(setReagion(e.target.value))}
-						/>
+							<label className="label">Reagion</label>
+							<input
+								type="text"
+								className="input"
+								placeholder="Reagion"
+								value={reagion}
+								onChange={(e) => setReagion(e.target.value)}
+							/>
 
-						<label className="label">About</label>
-						<input
-							type="text"
-							className="input"
-							placeholder="About"
-							value={about}
-							onChange={(e) => onChange(setAbout(e.target.value))}
-						/>
+							<label className="label">About</label>
+							<input
+								type="text"
+								className="input"
+								placeholder="About"
+								value={about}
+								onChange={(e) => setAbout(e.target.value)}
+							/>
 
-						<button
-							className="btn btn-neutral mt-4"
-							onClick={() => saveDetails()}
-						>
-							Save
-						</button>
+							<button
+								className="btn btn-neutral mt-4"
+								onClick={() => saveDetails()}
+							>
+								Save
+							</button>
+						</>
+						<>
+							<div>
+								<img></img>
+							</div>
+						</>
 					</>
 				) : (
 					<>
