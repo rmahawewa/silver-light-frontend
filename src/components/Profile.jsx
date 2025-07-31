@@ -21,10 +21,42 @@ const Profile = () => {
 	const [reagion, setReagion] = useState(user.reagion ? user.reagion : "");
 	const [about, setAbout] = useState(user.about ? user.about : "");
 
+	const [selectedFile, setSelectedFile] = useState(null);
+	const [previewUrl, setPreviewUrl] = useState(null);
+	const [error, setError] = useState("");
+
 	const dispatch = useDispatch();
 
-	const handleFileChange = () => {
+	const handleFileChange = (event) => {
 		setPhotoUrl(event.target.files[0]);
+
+		if (file) {
+			// Basic validation: Check if it's an image
+			if (!file.type.startsWith("image/")) {
+				setError("Please select an image file (e.g., .jpg, .png, .gif).");
+				setSelectedFile(null);
+				setPreviewUrl(null);
+				return;
+			}
+
+			setError(""); // Clear any previous errors
+			setSelectedFile(file);
+
+			// Create a FileReader instance
+			const reader = new FileReader();
+
+			// Set up the onload event handler
+			reader.onloadend = () => {
+				setPreviewUrl(reader.result); // reader.result contains the Data URL
+			};
+
+			// Read the file as a Data URL
+			reader.readAsDataURL(file);
+		} else {
+			setSelectedFile(null);
+			setPreviewUrl(null);
+			setError("");
+		}
 	};
 
 	const saveDetails = async () => {
@@ -103,6 +135,7 @@ const Profile = () => {
 								placeholder="Photo url"
 								onChange={handleFileChange}
 							/>
+							{error && <p style={{ color: "red" }}>{error}</p>}
 
 							<label className="label">Birthday</label>
 							<input
@@ -167,14 +200,27 @@ const Profile = () => {
 						</>
 						<>
 							<div>
-								<img
-									src={photoUrl}
-									style={{
-										maxWidth: "100%",
-										maxHeight: "100%",
-										objectFit: "contain",
-									}}
-								/>
+								{previewUrl ? (
+									<img
+										src={previewUrl}
+										style={{
+											maxWidth: "100%",
+											maxHeight: "100%",
+											objectFit: "contain",
+										}}
+									/>
+								) : (
+									photoUrl && (
+										<img
+											src={photoUrl}
+											style={{
+												maxWidth: "100%",
+												maxHeight: "100%",
+												objectFit: "contain",
+											}}
+										/>
+									)
+								)}
 							</div>
 						</>
 					</>
