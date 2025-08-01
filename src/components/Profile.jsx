@@ -28,14 +28,15 @@ const Profile = () => {
 	const dispatch = useDispatch();
 
 	const handleFileChange = (event) => {
-		setPhotoUrl(event.target.files[0]);
+		// setPhotoUrl(event.target.files[0]);
+		let file = event.target.files[0];
 
 		if (file) {
 			// Basic validation: Check if it's an image
 			if (!file.type.startsWith("image/")) {
 				setError("Please select an image file (e.g., .jpg, .png, .gif).");
 				setSelectedFile(null);
-				setPreviewUrl(null);
+				setPhotoUrl(null);
 				return;
 			}
 
@@ -47,14 +48,14 @@ const Profile = () => {
 
 			// Set up the onload event handler
 			reader.onloadend = () => {
-				setPreviewUrl(reader.result); // reader.result contains the Data URL
+				setPhotoUrl(reader.result); // reader.result contains the Data URL
 			};
 
 			// Read the file as a Data URL
 			reader.readAsDataURL(file);
 		} else {
 			setSelectedFile(null);
-			setPreviewUrl(null);
+			setPhotoUrl(null);
 			setError("");
 		}
 	};
@@ -88,6 +89,44 @@ const Profile = () => {
 		} catch (err) {
 			console.error(err);
 		}
+
+		try {
+			if (!photoUrl) {
+				setMessage("Please select upload an image");
+				return;
+			}
+
+			const formData = new FormData();
+			formData.append("image", photoUrl);
+			formData.append("firstName", firstName);
+			formData.append("lastName,", lastName);
+			formData.append("userName", userName);
+			formData.append("birthday", birthday);
+			formData.append("email,", email);
+			formData.append("gender", gender);
+			formData.append("photoUrl", photoUrl);
+			formData.append("country", country);
+			formData.append("reagion", reagion);
+			formData.append("about", about);
+
+			const response = await axios.post(BASE_URL + "/image/upload", formData, {
+				headers: { "Content-Type": "multipart/form-data" },
+				withCredentials: true,
+			});
+			if (response.data.data) {
+				const img = response.data.data;
+				img.reactions = [];
+				dispatch(addoneimage(img));
+			}
+			if (response.data.data._id) {
+				console.log(response.data.data._id);
+				setImageId(response.data.data._id);
+			}
+			if (imageId) console.log("123456");
+		} catch (err) {
+			console.error(err);
+			setMessage(err);
+		}
 	};
 
 	return (
@@ -98,8 +137,8 @@ const Profile = () => {
 				</legend>
 
 				{isEditable ? (
-					<>
-						<>
+					<div className="flex">
+						<div>
 							<label className="label">First name</label>
 							<input
 								type="text"
@@ -126,6 +165,30 @@ const Profile = () => {
 								value={userName}
 								onChange={(e) => setUserName(e.target.value)}
 							/>
+
+							<div className="w-30 h-30 my-5 flex items-center justify-center">
+								{previewUrl ? (
+									<img
+										src={previewUrl}
+										style={{
+											maxWidth: "100%",
+											maxHeight: "100%",
+											objectFit: "contain",
+										}}
+									/>
+								) : (
+									photoUrl && (
+										<img
+											src={photoUrl}
+											style={{
+												maxWidth: "100%",
+												maxHeight: "100%",
+												objectFit: "contain",
+											}}
+										/>
+									)
+								)}
+							</div>
 
 							<label className="label">Photo url</label>
 							<input
@@ -197,33 +260,8 @@ const Profile = () => {
 							>
 								Save
 							</button>
-						</>
-						<>
-							<div>
-								{previewUrl ? (
-									<img
-										src={previewUrl}
-										style={{
-											maxWidth: "100%",
-											maxHeight: "100%",
-											objectFit: "contain",
-										}}
-									/>
-								) : (
-									photoUrl && (
-										<img
-											src={photoUrl}
-											style={{
-												maxWidth: "100%",
-												maxHeight: "100%",
-												objectFit: "contain",
-											}}
-										/>
-									)
-								)}
-							</div>
-						</>
-					</>
+						</div>
+					</div>
 				) : (
 					<>
 						<label className="label">First name</label>
