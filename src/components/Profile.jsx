@@ -62,22 +62,27 @@ const Profile = () => {
 
 	const saveDetails = async () => {
 		try {
-			const res = await axios.patch(
-				BASE_URL + "/update",
-				{
-					firstName,
-					lastName,
-					userName,
-					birthday,
-					email,
-					gender,
-					photoUrl,
-					country,
-					reagion,
-					about,
-				},
-				{ withCredentials: true }
-			);
+			if (!selectedFile) {
+				setMessage("Please select upload an image");
+				return;
+			}
+
+			const formData = new FormData();
+			formData.append("image", selectedFile);
+			formData.append("firstName", firstName);
+			formData.append("lastName,", lastName);
+			formData.append("userName", userName);
+			formData.append("birthday", birthday);
+			formData.append("email,", email);
+			formData.append("gender", gender);
+			formData.append("country", country);
+			formData.append("reagion", reagion);
+			formData.append("about", about);
+
+			const response = await axios.patch(BASE_URL + "/update", formData, {
+				headers: { "Content-Type": "multipart/form-data" },
+				withCredentials: true,
+			});
 			console.log(res.data.data);
 			if (res.data.data) {
 				//dispatch the user store
@@ -88,44 +93,7 @@ const Profile = () => {
 			}
 		} catch (err) {
 			console.error(err);
-		}
-
-		try {
-			if (!photoUrl) {
-				setMessage("Please select upload an image");
-				return;
-			}
-
-			const formData = new FormData();
-			formData.append("image", photoUrl);
-			formData.append("firstName", firstName);
-			formData.append("lastName,", lastName);
-			formData.append("userName", userName);
-			formData.append("birthday", birthday);
-			formData.append("email,", email);
-			formData.append("gender", gender);
-			formData.append("photoUrl", photoUrl);
-			formData.append("country", country);
-			formData.append("reagion", reagion);
-			formData.append("about", about);
-
-			const response = await axios.post(BASE_URL + "/image/upload", formData, {
-				headers: { "Content-Type": "multipart/form-data" },
-				withCredentials: true,
-			});
-			if (response.data.data) {
-				const img = response.data.data;
-				img.reactions = [];
-				dispatch(addoneimage(img));
-			}
-			if (response.data.data._id) {
-				console.log(response.data.data._id);
-				setImageId(response.data.data._id);
-			}
-			if (imageId) console.log("123456");
-		} catch (err) {
-			console.error(err);
-			setMessage(err);
+			setError(err);
 		}
 	};
 
