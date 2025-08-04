@@ -21,15 +21,28 @@ const Profile = () => {
 	const [reagion, setReagion] = useState(user.reagion ? user.reagion : "");
 	const [about, setAbout] = useState(user.about ? user.about : "");
 
-	const [selectedFile, setSelectedFile] = useState(null);
+	const [selectedFile, setSelectedFile] = useState({});
 	const [previewUrl, setPreviewUrl] = useState(null);
 	const [error, setError] = useState("");
 
 	const dispatch = useDispatch();
 
+	// Use a useEffect hook to log the state *after* it has been updated.
+	// This hook runs whenever `photoUrl` or `selectedFile` changes.
+	useEffect(() => {
+		if (selectedFile) {
+			console.log("Selected file has been updated:", selectedFile);
+		}
+		if (photoUrl) {
+			console.log("Photo URL has been updated:", photoUrl);
+		}
+	}, [photoUrl, selectedFile]); // Dependency array: the effect runs when these values change.
+
 	const handleFileChange = (event) => {
 		// setPhotoUrl(event.target.files[0]);
+
 		let file = event.target.files[0];
+		console.log(file); // logs the file details
 
 		if (file) {
 			// Basic validation: Check if it's an image
@@ -41,7 +54,9 @@ const Profile = () => {
 			}
 
 			setError(""); // Clear any previous errors
-			setSelectedFile(file);
+			setSelectedFile(event.target.files[0]);
+
+			console.log(file); // retuns null
 
 			// Create a FileReader instance
 			const reader = new FileReader();
@@ -49,6 +64,7 @@ const Profile = () => {
 			// Set up the onload event handler
 			reader.onloadend = () => {
 				setPhotoUrl(reader.result); // reader.result contains the Data URL
+				console.log(photoUrl);
 			};
 
 			// Read the file as a Data URL
@@ -164,7 +180,7 @@ const Profile = () => {
 								accept="image/*"
 								className="input"
 								placeholder="Photo url"
-								onChange={handleFileChange}
+								onChange={(e) => handleFileChange(e)}
 							/>
 							{error && <p style={{ color: "red" }}>{error}</p>}
 
