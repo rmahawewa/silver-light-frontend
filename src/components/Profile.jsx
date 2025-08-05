@@ -56,7 +56,7 @@ const Profile = () => {
 			setError(""); // Clear any previous errors
 			setSelectedFile(event.target.files[0]);
 
-			console.log(file); // retuns null
+			console.log(selectedFile); // retuns null
 
 			// Create a FileReader instance
 			const reader = new FileReader();
@@ -83,23 +83,25 @@ const Profile = () => {
 				return;
 			}
 
+			// console.log(selectedFile);
+
 			const formData = new FormData();
 			formData.append("image", selectedFile);
 			formData.append("firstName", firstName);
 			formData.append("lastName,", lastName);
 			formData.append("userName", userName);
 			formData.append("birthday", birthday);
-			formData.append("email,", email);
+			formData.append("email", email);
 			formData.append("gender", gender);
 			formData.append("country", country);
 			formData.append("reagion", reagion);
 			formData.append("about", about);
 
-			const response = await axios.patch(BASE_URL + "/update", formData, {
+			const res = await axios.patch(BASE_URL + "/update", formData, {
 				headers: { "Content-Type": "multipart/form-data" },
 				withCredentials: true,
 			});
-			console.log(res.data.data);
+			// console.log(res.data.data);
 			if (res.data.data) {
 				//dispatch the user store
 				dispatch(addUser(res.data.data));
