@@ -38,6 +38,20 @@ const Profile = () => {
 		}
 	}, [photoUrl, selectedFile]); // Dependency array: the effect runs when these values change.
 
+	useEffect(() => {
+		setFirstName(user.firstName ? user.firstName : "");
+		setLastName(user.lastName ? user.lastName : "");
+		setUserName(user.userName ? user.userName : "");
+		setBirthday(user.birthday ? user.birthday : "");
+		setEmail(user.email ? user.email : "");
+		setGender(user.gender ? user.gender : "");
+		setPhotoUrl(user.photoUrl ? user.photoUrl : "");
+		setCountry(user.country ? user.country : "");
+		setReagion(user.reagion ? user.reagion : "");
+		setAbout(user.about ? user.about : "");
+		console.log(photoUrl);
+	}, [user]);
+
 	const handleFileChange = (event) => {
 		// setPhotoUrl(event.target.files[0]);
 
@@ -86,9 +100,10 @@ const Profile = () => {
 			// console.log(selectedFile);
 
 			const formData = new FormData();
-			formData.append("image", selectedFile);
+			Object.keys(selectedFile).length > 0 &&
+				formData.append("image", selectedFile);
 			formData.append("firstName", firstName);
-			formData.append("lastName,", lastName);
+			formData.append("lastName", lastName);
 			formData.append("userName", userName);
 			formData.append("birthday", birthday);
 			formData.append("email", email);
@@ -101,7 +116,7 @@ const Profile = () => {
 				headers: { "Content-Type": "multipart/form-data" },
 				withCredentials: true,
 			});
-			// console.log(res.data.data);
+			console.log(res.data.data);
 			if (res.data.data) {
 				//dispatch the user store
 				dispatch(addUser(res.data.data));
@@ -249,6 +264,7 @@ const Profile = () => {
 						</div>
 					</div>
 				) : (
+					// <h1></h1>
 					<>
 						<label className="label">First name</label>
 						<label>{firstName}</label>
