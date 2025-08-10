@@ -191,15 +191,22 @@ const Profile = () => {
 								)}
 							</div>
 
-							<label className="label">Photo url</label>
-							<input
-								type="file"
-								accept="image/*"
-								className="input"
-								placeholder="Photo url"
-								onChange={(e) => handleFileChange(e)}
-							/>
-							{error && <p style={{ color: "red" }}>{error}</p>}
+							<div className="collapse">
+								<input type="checkbox" />
+								<div className="collapse-title">
+									<label className="label">Photo url</label>
+								</div>
+								<div className="collapse-content text-sm">
+									<input
+										type="file"
+										accept="image/*"
+										className="input"
+										placeholder="Photo url"
+										onChange={(e) => handleFileChange(e)}
+									/>
+									{error && <p style={{ color: "red" }}>{error}</p>}
+								</div>
+							</div>
 
 							<label className="label">Birthday</label>
 							<input
